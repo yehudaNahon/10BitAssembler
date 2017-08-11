@@ -1,6 +1,12 @@
 #include <stdbool.h>
 
 
+
+#define ASSEMBLY_END (".as")
+#define OBJECT_END (".ob")
+#define EXTERN_END (".ext")
+#define ENTRY_END (".ent")
+
 /*
 	Return whether or not the if an assembly file
 	note : for now will return true if the file is with the ending .as or if the file has no ending
@@ -12,3 +18,12 @@
 
 */
 bool IsAssemblyFile(const char* fileName);
+
+/*
+    Run the Assembler Process on the file this will create all the needed files and report all errors to
+    the stdout
+
+    return  :   true-successfully assembled file
+                false-somthing went wrong
+*/
+bool AssembleFile(char* AssemblerFile);

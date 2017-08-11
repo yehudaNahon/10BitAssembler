@@ -27,6 +27,7 @@ This is the main entry point of the programe
 int main(int argc, char* argv[])
 {
 	char* files[NAME_MAX];
+	char temp[NAME_MAX];
 	int i = 0;
 	int fileCount = 0;
 
@@ -60,13 +61,14 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			Log(eError, "File Provided Isn't a assembly file");
+			Log(eError, "File Provided Isn't an assembly file");
 		}
 	}
 
 	for(i=0; i< fileCount; i++)
 	{
-		printf("%s\n",files[i]);
+		CreateFileName(files[i],ASSEMBLY_END,temp,NAME_MAX);
+		AssembleFile(temp);
 	}
 
 	for(i=0; i < fileCount; i++)
