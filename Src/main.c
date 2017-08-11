@@ -6,10 +6,11 @@
 
 #include "Assembler.h"
 #include "FileUtils.h"
+#include "Log.h"
 
 #define MIN_ARG_COUNT (2)
 
-
+#define MEMORY_ERR ("Failed Locating Memory")
 
 /*
 	Prints to stdout a helful help menu with the explanation on how to use the programme
@@ -44,7 +45,7 @@ int main(int argc, char* argv[])
 			files[fileCount] = malloc(NAME_MAX * sizeof(char));
 			if(!files[fileCount])
 			{
-				/*TODO: write error log for memory allocation and exit*/
+				Log(eError,MEMORY_ERR);
 				return 1;
 			}
 
@@ -54,12 +55,12 @@ int main(int argc, char* argv[])
 			}
 			else
 			{
-				/*TODO: print a error log*/ 	
+				Log(eError, "Failed Extracting File Name"); 	
 			}	
 		}
 		else
 		{
-			/*TODO: write error log for iligal file*/
+			Log(eError, "File Provided Isn't a assembly file");
 		}
 	}
 
