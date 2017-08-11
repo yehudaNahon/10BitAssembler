@@ -1,6 +1,6 @@
 # Source, Executable, Includes, Library Defines
-INCL   = GeneralMacros.h FileUtils.h Assembler.h
-SRC    = main.c FileUtils.c Assembler.c 
+INCL   = GeneralMacros.h FileUtils.h Assembler.h Log.h
+SRC    = main.c FileUtils.c Assembler.c Log.c
 OBJ    = $(SRC:.c=.o)
 LIBS   = 
 EXE    = Assembler
