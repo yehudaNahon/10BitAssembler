@@ -1,5 +1,7 @@
-#include <stdbool.h>
+#ifndef ASSEMBLER_H
+#define ASSEMBLER_H
 
+#include <stdbool.h>
 
 
 #define ASSEMBLY_END (".as")
@@ -17,7 +19,7 @@
             false - the file does not meat the requirments
 
 */
-bool IsAssemblyFile(const char* fileName);
+bool Assembler_IsAssemblyFile(const char* fileName);
 
 /*
     Run the Assembler Process on the file this will create all the needed files and report all errors to
@@ -26,4 +28,6 @@ bool IsAssemblyFile(const char* fileName);
     return  :   true-successfully assembled file
                 false-somthing went wrong
 */
-bool AssembleFile(char* AssemblerFile);
+bool Assembler_AssembleFile(char* AssemblerFile);
+
+#endif

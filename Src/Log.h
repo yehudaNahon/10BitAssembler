@@ -1,4 +1,7 @@
+#ifndef LOG_H
+#define LOG_H
 
+#define MEMORY_ERR ("Failed Locating Memory")
 
 typedef enum ELogType
 {
@@ -16,3 +19,4 @@ typedef enum ELogType
 void Log(ELogType type,const char* message);
 
 
+#endif

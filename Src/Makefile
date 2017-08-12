@@ -1,6 +1,45 @@
 # Source, Executable, Includes, Library Defines
-INCL   = GeneralMacros.h FileUtils.h Assembler.h Log.h
-SRC    = main.c FileUtils.c Assembler.c Log.c
+#----------------------libs--------------------
+
+#assembler
+ASSEMBLER_H = Assembler.h AssemblerInternals.h
+ASSEMBLER_C = Assembler.c
+
+#assembly
+ASSEMBLY_H = Assembly.h
+ASSEMBLY_C = Assembly.c
+
+#file
+FILE_H = File.h
+FILE_C = File.c
+
+#Symbol table
+SYMBOL_TABLE_H = SymbolTable.h
+SYMBOL_TABLE_C = SymbolTable.c
+
+#symbol
+SYMBOL_H = Symbol.h SymbolInternals.h
+SYMBOL_C = Symbol.c
+
+#log
+LOG_H = Log.h
+LOG_C = Log.c
+
+#memory
+MEMORY_H = Memory.h
+MEMORY_C = Memory.c
+
+#string
+STRING_H = String.h
+STRING_C = String.c
+
+
+#macros
+MACROS = GeneralMacros.h
+
+
+INCL   = $(ASSEMBLER_H) $(FILE_H) $(SYMBOL_TABLE_H) $(SYMBOL_H) $(LOG_H) $(MEMORY_H) $(MACROS) $(STRING_H) $(ASSEMBLY_H)
+SRC    = main.c $(ASSEMBLER_C) $(FILE_C) $(SYMBOL_TABLE_C) $(SYMBOL_C) $(LOG_C) $(MEMORY_C) $(STRING_C) $(ASSEMBLY_C)
 OBJ    = $(SRC:.c=.o)
 LIBS   = 
 EXE    = Assembler

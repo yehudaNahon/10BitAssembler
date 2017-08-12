@@ -1,3 +1,6 @@
+#ifndef COMPUTER_CONFIG_H
+#define COMPUTER_CONFIG_H 
+
 #include <stdint.h>
 
 /*************************************************
@@ -67,9 +70,4 @@ struct Computer
 
 
 
-
-
-
-
-
-
+#endif

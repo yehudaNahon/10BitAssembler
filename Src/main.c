@@ -1,16 +1,13 @@
+#include "OSDefines.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <linux/limits.h>
-#include <malloc.h>
 
 #include "Assembler.h"
-#include "FileUtils.h"
 #include "Log.h"
+#include "Memory.h"
+#include "File.h"
 
 #define MIN_ARG_COUNT (2)
 
-#define MEMORY_ERR ("Failed Locating Memory")
 
 /*
 	Prints to stdout a helful help menu with the explanation on how to use the programme
@@ -26,8 +23,8 @@ This is the main entry point of the programe
 */
 int main(int argc, char* argv[])
 {
-	char* files[NAME_MAX];
-	char temp[NAME_MAX];
+	char* files[MAX_FILE_NAME];
+	char temp[MAX_FILE_NAME];
 	int i = 0;
 	int fileCount = 0;
 
@@ -40,17 +37,17 @@ int main(int argc, char* argv[])
 	for(i=1; i<argc; i++)
 	{
 
-		if(IsAssemblyFile(argv[i]))
+		if(Assembler_IsAssemblyFile(argv[i]))
 		{
 			/* Allocate a new array for the file name*/
-			files[fileCount] = malloc(NAME_MAX * sizeof(char));
+			files[fileCount] = Memory_Allocate(NAME_MAX * sizeof(char));
 			if(!files[fileCount])
 			{
 				Log(eError,MEMORY_ERR);
 				return 1;
 			}
 
-			if(CleanFileName(argv[i], files[fileCount], NAME_MAX))
+			if(File_CleanName(argv[i], files[fileCount], NAME_MAX))
 			{
 				fileCount++;	
 			}
@@ -67,13 +64,13 @@ int main(int argc, char* argv[])
 
 	for(i=0; i< fileCount; i++)
 	{
-		CreateFileName(files[i],ASSEMBLY_END,temp,NAME_MAX);
-		AssembleFile(temp);
+		File_CreateName(files[i],ASSEMBLY_END,temp,NAME_MAX);
+		Assembler_AssembleFile(temp);
 	}
 
 	for(i=0; i < fileCount; i++)
 	{
-		free(files[i]);
+		Memory_Delete(files[i]);
 	}
 
     return 0;

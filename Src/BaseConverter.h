@@ -1,4 +1,5 @@
-
+#ifndef BASE_CONVERTER_H
+#define BASE_CONVERTER_H
 
 /*
 	Convert from base 10 to 4 
@@ -27,4 +28,4 @@ bool Base10ToBase4(int base10, int &o_base4);
 bool Base4ToBase10(long int base4, int base10);
 
 
-
+#endif
