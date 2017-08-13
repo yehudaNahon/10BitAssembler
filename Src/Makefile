@@ -33,13 +33,20 @@ MEMORY_C = Memory.c
 STRING_H = String.h
 STRING_C = String.c
 
+#queue
+QUEUE_H = Queue.h 
+QUEUE_C = Queue.c
+
+#node
+NODE_H = Node.h 
+NODE_C = Node.c
 
 #macros
 MACROS = GeneralMacros.h
 
 
-INCL   = $(ASSEMBLER_H) $(FILE_H) $(SYMBOL_TABLE_H) $(SYMBOL_H) $(LOG_H) $(MEMORY_H) $(MACROS) $(STRING_H) $(ASSEMBLY_H)
-SRC    = main.c $(ASSEMBLER_C) $(FILE_C) $(SYMBOL_TABLE_C) $(SYMBOL_C) $(LOG_C) $(MEMORY_C) $(STRING_C) $(ASSEMBLY_C)
+INCL   = $(ASSEMBLER_H) $(FILE_H) $(SYMBOL_TABLE_H) $(SYMBOL_H) $(LOG_H) $(MEMORY_H) $(MACROS) $(STRING_H) $(ASSEMBLY_H) $(QUEUE_H) $(NODE_H)
+SRC    = main.c $(ASSEMBLER_C) $(FILE_C) $(SYMBOL_TABLE_C) $(SYMBOL_C) $(LOG_C) $(MEMORY_C) $(STRING_C) $(ASSEMBLY_C) $(QUEUE_C) $(NODE_C)
 OBJ    = $(SRC:.c=.o)
 LIBS   = 
 EXE    = Assembler

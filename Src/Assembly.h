@@ -1,11 +1,13 @@
 #include "SymbolTable.h"
 #include "OSDefines.h"
+#include "Queue.h"
 
 typedef struct Assembly
 {
     char fileName[MAX_FILE_NAME];
     SymbolTable symbolTable;
     size_t lineCount;
+    Queue commands;
 }Assembly;
 
 /*
@@ -13,13 +15,7 @@ typedef struct Assembly
 */
 Assembly Assembly_Init(char* fileName);
 
-/*
-    Copy a assembly file to a new one
-*/
-Assembly Assembly_Copy(Assembly* other);
-
-
-
+void Assembly_ResetLineCount(Assembly* as);
 
 
 

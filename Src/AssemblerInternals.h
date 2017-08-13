@@ -10,4 +10,6 @@ void Assembler_IsLabel(char* word, size_t index, void* programme);
 
 bool Assembler_IsCodeLine(char* line);
 
+void Assembler_CleanLine(char* line);
+
 #endif

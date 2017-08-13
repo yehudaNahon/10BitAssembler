@@ -14,19 +14,14 @@ Assembly Assembly_Init(char* fileName)
     assembly.symbolTable = SymbolTable_Init();
     assembly.lineCount = 0;
 
+    assembly.commands = Queue_Init();
+
     return assembly;
 }
 
-
-Assembly Assembly_Copy(Assembly* other)
+void Assembly_ResetLineCount(Assembly* as)
 {
-    Assembly this = Assembly_Init(other->fileName);
-    
-    this.symbolTable = SymbolTable_Copy(&other->symbolTable);
-    this.lineCount = other->lineCount;
-
-    return this;
+    as->lineCount = 0;
 }
-
 
 
