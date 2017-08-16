@@ -14,11 +14,15 @@ void Symbol_Clean(Symbol* symbol)
 Symbol Symbol_Init(char* name, size_t address)
 {
     Symbol symbol;
+    
+    Symbol_Clean(&symbol);
 
-    String_Copy(symbol.name, name, String_Len(name));
+    if(name)
+    {
+        String_Copy(symbol.name, name, String_Len(name));
+    }
     symbol.address = address;
     symbol.type = ePrivate;
-
 
     return symbol;
 }

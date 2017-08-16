@@ -3,7 +3,7 @@
 #include "Log.h"
 #include <string.h>
 #include <stdio.h>
-#define WASTE_STR (" \n\t")
+#define WASTE_STR (" \r\n\t")
 #define SPACE_STR (" ")
 
 int String_Len(const char* str)
@@ -44,9 +44,9 @@ bool String_OnlyWithChars(char* word, char* chars)
 }
 
 
-int String_Compare(const char* str1, const char* str2)
+int String_Compare(const char* str1, const char* str2, size_t maxLen)
 {
-    return strcmp(str1,str2);
+    return strncmp(str1, str2, maxLen);
 }
 
 
@@ -71,7 +71,7 @@ void String_SimplfyLine(char* line)
     {
         /*cleanup and exit*/
         Memory_Delete(buffer);
-        Memory_Set(line,0,length);
+        Memory_Copy(line,buffer,length);
         return;
     }
 
@@ -88,6 +88,19 @@ void String_SimplfyLine(char* line)
     Memory_Delete(buffer);
 }
 
+/*
+    print the line given to stdout
+*/
+void String_PrintLine(void* line, size_t* len, void* context)
+{
+    String_SimplfyLine(line);
+    printf("%s\n",(char*)line);
+}
 
+
+bool String_Empty(const char* line)
+{
+    return line ? line[0] == 0 || line[0] == '\n' : true;
+}
 
 

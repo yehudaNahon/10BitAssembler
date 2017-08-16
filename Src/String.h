@@ -2,6 +2,7 @@
 #define STRING_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #define LETTERS_CH "abcdefghijklmnopqrstuvwxyz"
 #define UPPER_CASE_CH "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -25,8 +26,11 @@ char* String_Split(char* str, const char* delimiter);
 
 bool String_OnlyWithChars(char* word,char* chars);
 
-int String_Compare(const char* str1, const char* str2);
+int String_Compare(const char* str1, const char* str2, size_t maxLen);
 
 void String_SimplfyLine(char* line);
+
+bool String_Empty(const char* line);
+
 
 #endif

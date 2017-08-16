@@ -20,6 +20,7 @@ for mentioned system with its registers and memory
 #define WORD_LENGTH (10)
 
 
+
 // A single word in the computer 
 struct Word
 {

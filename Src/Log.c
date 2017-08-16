@@ -21,7 +21,7 @@ void Log(ELogType type,const char* message)
 {
     TypeConfig *config;
 
-    if((int)type < NUM_OF_ELEM(TypeLookUpTable, TypeConfig))
+    if((int)type < NUM_OF_ELEM(TypeLookUpTable))
     {
         config = &TypeLookUpTable[(int)type];
     }

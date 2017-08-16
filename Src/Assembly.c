@@ -11,7 +11,8 @@ Assembly Assembly_Init(char* fileName)
     Memory_Copy(assembly.fileName, fileName, String_Len(fileName));
 
     /*create sybol table*/
-    assembly.symbolTable = SymbolTable_Init();
+    assembly.codeSymbols = SymbolTable_Init();
+    assembly.dataSymbols = SymbolTable_Init();
     assembly.instructionCounter = 0;
     assembly.dataCounter = 0;
 
