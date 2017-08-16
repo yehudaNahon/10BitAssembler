@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
 
 	for(i=0; i< fileCount; i++)
 	{
+		
 		File_CreateName(files[i],ASSEMBLY_END,temp,NAME_MAX);
 		Assembler_AssembleFile(temp);
 	}

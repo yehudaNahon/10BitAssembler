@@ -12,7 +12,8 @@ Assembly Assembly_Init(char* fileName)
 
     /*create sybol table*/
     assembly.symbolTable = SymbolTable_Init();
-    assembly.lineCount = 0;
+    assembly.instructionCounter = 0;
+    assembly.dataCounter = 0;
 
     assembly.commands = Queue_Init();
 
@@ -21,7 +22,6 @@ Assembly Assembly_Init(char* fileName)
 
 void Assembly_ResetLineCount(Assembly* as)
 {
-    as->lineCount = 0;
 }
 
 

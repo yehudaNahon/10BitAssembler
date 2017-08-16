@@ -6,7 +6,8 @@ typedef struct Assembly
 {
     char fileName[MAX_FILE_NAME];
     SymbolTable symbolTable;
-    size_t lineCount;
+    size_t instructionCounter;
+    size_t dataCounter;
     Queue commands;
 }Assembly;
 

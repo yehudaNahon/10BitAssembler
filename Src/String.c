@@ -1,11 +1,14 @@
 #include "String.h"
-
+#include "Memory.h"
+#include "Log.h"
 #include <string.h>
-
+#include <stdio.h>
+#define WASTE_STR (" \n\t")
+#define SPACE_STR (" ")
 
 int String_Len(const char* str)
 {
-    return strlen(str);
+    return str ? strlen(str) : -1;
 }
 
 bool String_HasChar(const char* str, char ch)
@@ -47,6 +50,43 @@ int String_Compare(const char* str1, const char* str2)
 }
 
 
+/* cleans the line from un needed spaces and tabs*/
+void String_SimplfyLine(char* line)
+{
+    char* word = NULL;
+    /*create buffer in the line size plus null*/
+    size_t length = String_Len(line + 1);
+    char* buffer = (char*)Memory_Allocate(length);
+    if(!buffer)
+    {
+        Log(eError,MEMORY_ERR);
+    }
+    /*clean buffer*/
+    Memory_Set(buffer,0,length);
+
+    /* spite to single words and create a new sentence only with the basic signs*/
+    word = String_Split(line, WASTE_STR);
+    /* if theres no words*/
+    if(!word)
+    {
+        /*cleanup and exit*/
+        Memory_Delete(buffer);
+        Memory_Set(line,0,length);
+        return;
+    }
+
+    do
+    {
+        String_Append(buffer,word,length);
+        String_Append(buffer,SPACE_STR,length);
+    }while((word = String_Split(NULL, WASTE_STR)));
+
+ 
+    /* copy back the info to line*/
+    String_Copy(line,buffer,length);
+    /*release resources*/
+    Memory_Delete(buffer);
+}
 
 
 

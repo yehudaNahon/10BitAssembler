@@ -58,26 +58,21 @@ char* File_FindDot(const char* fileName)
 }
 
 
-bool File_ForEachLine(FILE* file, void (*iterator)(char*,size_t,void*), void* context)
+void File_ForEach(FILE* file,Iterator iter, void* context)
 {
     char* line = NULL;
     size_t len = 0;
     size_t lineCount = 0;
 
-    /* validaty check*/
-    if(!file || !iterator)
-    {
-        return false;
-    }
-
     /* run on all lines and call the iterator*/
-    lineCount = 0;
-    while (File_GetLine(file, &line, &len) != FD_ERROR) {
-        iterator(line,lineCount,context);
-        lineCount++;
-    }
-
-    return true;
+	if(file && iter)
+	{
+		lineCount = 0;
+		while (File_GetLine(file, &line, &len) != FD_ERROR) {
+			iter(line,&len,context);
+			lineCount++;
+		}
+	}
 }
 
 ssize_t File_GetLine(FILE* file, char** line, size_t* len)

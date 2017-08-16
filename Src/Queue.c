@@ -14,16 +14,16 @@ Queue Queue_Init()
 
 bool Queue_enqueue(Queue* queue, void* data)
 {
-    /* allocate memory for the new node*/
-    Node* ptr = Memory_Allocate(sizeof(Node));
+    /* allocate memory for the new LinkedList*/
+    LinkedList* ptr = Memory_Allocate(sizeof(LinkedList));
     if(!ptr)
     {
         Log(eError, MEMORY_ERR);
         return false;
     }
 
-    /* initialize new node*/
-    Node_Init(ptr,data);
+    /* initialize new LinkedList*/
+    LinkedList_Init(ptr,data);
 
     /* update fields */
     queue->tail = ptr;
@@ -39,7 +39,7 @@ bool Queue_enqueue(Queue* queue, void* data)
 
 void* Queue_dequeue(Queue* queue)
 {
-    Node* ptr = NULL;
+    LinkedList* ptr = NULL;
     void* data = NULL;
 
     /* validaty check*/
@@ -48,12 +48,12 @@ void* Queue_dequeue(Queue* queue)
         return NULL;
     }
 
-    /*change the queue and save the unpointer node*/
+    /*change the queue and save the unpointer LinkedList*/
     ptr = queue->head;
     queue->head = ptr->next;
     data = ptr->data;
     
-    /* delete the node block*/
+    /* delete the LinkedList block*/
     Memory_Delete(ptr);
 
     return data;

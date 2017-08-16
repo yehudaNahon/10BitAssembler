@@ -4,13 +4,13 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "Node.h"
+#include "LinkedList.h"
 
 typedef struct Queue
 {
     size_t count;
-    Node* head;
-    Node* tail;
+    LinkedList* head;
+    LinkedList* tail;
 }Queue;
 
 Queue Queue_Init();

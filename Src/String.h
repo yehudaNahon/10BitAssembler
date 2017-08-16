@@ -27,6 +27,6 @@ bool String_OnlyWithChars(char* word,char* chars);
 
 int String_Compare(const char* str1, const char* str2);
 
-
+void String_SimplfyLine(char* line);
 
 #endif

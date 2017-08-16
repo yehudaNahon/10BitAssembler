@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#include "Container.h"
 
 /*
     Open a file descriptor
@@ -41,7 +42,7 @@ char* File_FindDot(const char* fileName);
                     -a pointer to a user selected data structure that will be passed with context
     context     - a pointer to user selected data structure to pass at each line call
 */
-bool File_ForEachLine(FILE* file, void (*iterator)(char*,size_t,void*), void* context);
+void File_ForEach(FILE* file,Iterator iter, void* context);
 
 
 

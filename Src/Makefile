@@ -1,6 +1,10 @@
 # Source, Executable, Includes, Library Defines
 #----------------------libs--------------------
 
+
+#conteiner
+CONTAINER_H = Container.h
+
 #assembler
 ASSEMBLER_H = Assembler.h AssemblerInternals.h
 ASSEMBLER_C = Assembler.c
@@ -37,16 +41,16 @@ STRING_C = String.c
 QUEUE_H = Queue.h 
 QUEUE_C = Queue.c
 
-#node
-NODE_H = Node.h 
-NODE_C = Node.c
+#LinkedList
+LINKED_LIST_H = LinkedList.h 
+LINKED_LIST_C = LinkedList.c
 
 #macros
 MACROS = GeneralMacros.h
 
 
-INCL   = $(ASSEMBLER_H) $(FILE_H) $(SYMBOL_TABLE_H) $(SYMBOL_H) $(LOG_H) $(MEMORY_H) $(MACROS) $(STRING_H) $(ASSEMBLY_H) $(QUEUE_H) $(NODE_H)
-SRC    = main.c $(ASSEMBLER_C) $(FILE_C) $(SYMBOL_TABLE_C) $(SYMBOL_C) $(LOG_C) $(MEMORY_C) $(STRING_C) $(ASSEMBLY_C) $(QUEUE_C) $(NODE_C)
+INCL   = $(CONTAINER_H) $(ASSEMBLER_H) $(FILE_H) $(SYMBOL_TABLE_H) $(SYMBOL_H) $(LOG_H) $(MEMORY_H) $(MACROS) $(STRING_H) $(ASSEMBLY_H) $(QUEUE_H) $(LINKED_LIST_H) 
+SRC    = main.c $(ASSEMBLER_C) $(FILE_C) $(SYMBOL_TABLE_C) $(SYMBOL_C) $(LOG_C) $(MEMORY_C) $(STRING_C) $(ASSEMBLY_C) $(QUEUE_C) $(LINKED_LIST_C)
 OBJ    = $(SRC:.c=.o)
 LIBS   = 
 EXE    = Assembler
