@@ -75,69 +75,6 @@ void Assembler_AddToLinkedList(void* line, size_t* len, void* context)
 
 }
 
-bool Assembly_IsData(const char* line)
-{
-    int i=0;
-    for(i=0;i< DATA_NUM_OF_ELEM ; i++)
-    {
-        /*return true only if the strings are the same from the start*/
-        if(!String_Compare(line, dataHandlers[i].command, String_Len(dataHandlers[i].command)))
-        {
-            return true;
-        }
-    } 
-
-    return false;
-}
-
-bool Assembly_IsCommand(const char* line)
-{
-    int i=0;
-    for(i=0;i< COMMAND_NUM_OF_ELEM ; i++)
-    {
-        /*return true only if the strings are the same from the start*/
-        if(!String_Compare(line, commandHandlers[i].command, String_Len(commandHandlers[i].command)))
-        {
-            return true;
-        }
-    } 
-
-    return false;
-}
-
-size_t Assembler_AddDataLine(char* line)
-{
-    int i=0;
-    
-    for(i=0;i< DATA_NUM_OF_ELEM ; i++)
-    {
-        /*return true only if the strings are the same from the start*/
-        if(String_Compare(line, dataHandlers[i].command, String_Len(dataHandlers[i].command)) == 0)
-        {
-            return dataHandlers[i].act(line, NULL);
-        }
-    } 
-
-    return 0;
-}
-
-size_t Assembler_AddCommandLine(char* line)
-{
-    int i=0;
-
-    for(i=0;i< COMMAND_NUM_OF_ELEM ; i++)
-    {
-        
-        /*return true only if the strings are the same from the start*/
-        if(String_Compare(line, commandHandlers[i].command, String_Len(commandHandlers[i].command)) == 0)
-        {            
-            return commandHandlers[i].act(line,NULL);
-        }
-    } 
-
-    return 0;
-}
-
 void Assembler_CreateAssembly(void* data, size_t* len, void* context)
 {
     Assembly* prog = context;
@@ -167,18 +104,18 @@ void Assembler_CreateAssembly(void* data, size_t* len, void* context)
         String_SimplfyLine(label);
     }
     
-    if(Assembly_IsData(line))
+    if(DataHandler_IsDataLine(line))
     {
-        prog->dataCounter += Assembler_AddDataLine(line);
+        prog->dataCounter += DataHandler_AddDataLine(line, NULL);
         if(label)
         {
             symbol = Symbol_Init(label,prog->dataCounter);
             SymbolTable_AddSymbol(&prog->dataSymbols, &symbol);
         }
     }
-    else if(Assembly_IsCommand(line))
+    else if(CommandHandler_IsCommandLine(line))
     {
-        prog->instructionCounter += Assembler_AddCommandLine(line);
+        prog->instructionCounter += CommandHandler_AddCommandLine(line, NULL);
         if(label)
         {
             symbol = Symbol_Init(label,prog->instructionCounter);

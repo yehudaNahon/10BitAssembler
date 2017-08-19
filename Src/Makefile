@@ -5,7 +5,10 @@
 #conteiner
 CONTAINER_H = Container.h
 
-HANDLERS_H = Handlers.h Handler.h
+HANDLER_H = Handler.h
+HANDLER_C = Handler.c
+
+HANDLERS_H = Handlers.h 
 HANDLERS_C = Handlers.c
 
 #assembler
@@ -53,7 +56,7 @@ MACROS = GeneralMacros.h
 
 
 INCL   = $(CONTAINER_H) $(ASSEMBLER_H) $(FILE_H) $(SYMBOL_TABLE_H) $(SYMBOL_H) $(LOG_H) $(MEMORY_H) $(MACROS) $(STRING_H) $(ASSEMBLY_H) $(QUEUE_H) $(LINKED_LIST_H) $(HANDLERS_H) $(HANDLER_H)
-SRC    = main.c $(ASSEMBLER_C) $(FILE_C) $(SYMBOL_TABLE_C) $(SYMBOL_C) $(LOG_C) $(MEMORY_C) $(STRING_C) $(ASSEMBLY_C) $(QUEUE_C) $(LINKED_LIST_C) $(HANDLER_C) $(HANDLERS_C) 
+SRC    = main.c $(ASSEMBLER_C) $(FILE_C) $(SYMBOL_TABLE_C) $(SYMBOL_C) $(LOG_C) $(MEMORY_C) $(STRING_C) $(ASSEMBLY_C) $(QUEUE_C) $(LINKED_LIST_C) $(HANDLER_C) $(HANDLERS_C) $(HANDLER_H)
 OBJ    = $(SRC:.c=.o)
 LIBS   = 
 EXE    = Assembler
