@@ -1,16 +1,18 @@
+#include <stdint.h>
+#include <stdio.h>
+
 #include "Assembler.h"
 #include "AssemblerInternals.h"
 #include "Assembly.h"
 #include "Log.h"
 #include "File.h"
 #include "String.h"
-#include <stdint.h>
-#include <stdio.h>
 #include "SymbolTable.h"
 #include "Queue.h"
 #include "Memory.h"
 #include "LinkedList.h"
 #include "GeneralMacros.h"
+#include "Handlers.h"
 
 #define LABEL_INDICATOR (':')
 #define LABEL_SPLITER (":")
@@ -18,33 +20,6 @@
 
 #define MAX_LINE_LEN (80)
 #define COMMENT_CH (';')
-
-#define DATA_NUM_OF_ELEM (3)
-const char* dataInstructionsTable[MAX_LINE_LEN] = {
-    ".data",
-    ".mat",
-    ".string"
-};
-
-#define COMMAND_NUM_OF_ELEM (16)
-const char* commandInstructionsTable[MAX_LINE_LEN] = {
-    "mov",
-    "cmp",
-    "add",
-    "sub",
-    "not",
-    "clr",
-    "lea",
-    "inc",
-    "dec",
-    "jmp",
-    "bne",
-    "red",
-    "prn",
-    "jsr",
-    "rts",
-    "stop",
-};
 
 
 bool Assembly_IsComment(const char* line)
@@ -63,35 +38,6 @@ bool Assembly_HasLabel(const char* line)
     return false;
 }
 
-bool Assembly_IsData(const char* line)
-{
-    int i=0;
-    for(i=0;i< DATA_NUM_OF_ELEM ; i++)
-    {
-        /*return true only if the strings are the same from the start*/
-        if(!String_Compare(line, dataInstructionsTable[i], String_Len(dataInstructionsTable[i])))
-        {
-            return true;
-        }
-    } 
-
-    return false;
-}
-
-bool Assembly_IsCommand(const char* line)
-{
-    int i=0;
-    for(i=0;i< COMMAND_NUM_OF_ELEM ; i++)
-    {
-        /*return true only if the strings are the same from the start*/
-        if(!String_Compare(line, commandInstructionsTable[i], String_Len(commandInstructionsTable[i])))
-        {
-            return true;
-        }
-    } 
-
-    return false;
-}
 
 
 bool Assembler_IsAssemblyFile(const char* fileName)
@@ -129,6 +75,68 @@ void Assembler_AddToLinkedList(void* line, size_t* len, void* context)
 
 }
 
+bool Assembly_IsData(const char* line)
+{
+    int i=0;
+    for(i=0;i< DATA_NUM_OF_ELEM ; i++)
+    {
+        /*return true only if the strings are the same from the start*/
+        if(!String_Compare(line, dataHandlers[i].command, String_Len(dataHandlers[i].command)))
+        {
+            return true;
+        }
+    } 
+
+    return false;
+}
+
+bool Assembly_IsCommand(const char* line)
+{
+    int i=0;
+    for(i=0;i< COMMAND_NUM_OF_ELEM ; i++)
+    {
+        /*return true only if the strings are the same from the start*/
+        if(!String_Compare(line, commandHandlers[i].command, String_Len(commandHandlers[i].command)))
+        {
+            return true;
+        }
+    } 
+
+    return false;
+}
+
+size_t Assembler_AddDataLine(char* line)
+{
+    int i=0;
+    
+    for(i=0;i< DATA_NUM_OF_ELEM ; i++)
+    {
+        /*return true only if the strings are the same from the start*/
+        if(String_Compare(line, dataHandlers[i].command, String_Len(dataHandlers[i].command)) == 0)
+        {
+            return dataHandlers[i].act(line, NULL);
+        }
+    } 
+
+    return 0;
+}
+
+size_t Assembler_AddCommandLine(char* line)
+{
+    int i=0;
+
+    for(i=0;i< COMMAND_NUM_OF_ELEM ; i++)
+    {
+        
+        /*return true only if the strings are the same from the start*/
+        if(String_Compare(line, commandHandlers[i].command, String_Len(commandHandlers[i].command)) == 0)
+        {            
+            return commandHandlers[i].act(line,NULL);
+        }
+    } 
+
+    return 0;
+}
 
 void Assembler_CreateAssembly(void* data, size_t* len, void* context)
 {
@@ -151,7 +159,6 @@ void Assembler_CreateAssembly(void* data, size_t* len, void* context)
         return;
     }
     
-
     if(Assembly_HasLabel(line))
     {
         label = String_Split(line, LABEL_SPLITER);
@@ -160,10 +167,9 @@ void Assembler_CreateAssembly(void* data, size_t* len, void* context)
         String_SimplfyLine(label);
     }
     
-
     if(Assembly_IsData(line))
     {
-        prog->dataCounter++;
+        prog->dataCounter += Assembler_AddDataLine(line);
         if(label)
         {
             symbol = Symbol_Init(label,prog->dataCounter);
@@ -172,14 +178,13 @@ void Assembler_CreateAssembly(void* data, size_t* len, void* context)
     }
     else if(Assembly_IsCommand(line))
     {
-        prog->instructionCounter++;
+        prog->instructionCounter += Assembler_AddCommandLine(line);
         if(label)
         {
             symbol = Symbol_Init(label,prog->instructionCounter);
             SymbolTable_AddSymbol(&prog->codeSymbols, &symbol);    
         }
     }
-
 }
 
 

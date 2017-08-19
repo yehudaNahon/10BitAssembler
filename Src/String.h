@@ -7,7 +7,7 @@
 #define LETTERS_CH "abcdefghijklmnopqrstuvwxyz"
 #define UPPER_CASE_CH "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define NUMBERS_CH "1234567890"
-
+#define SPACE_CH (" ")
 
 
 int String_Len(const char* str);
@@ -26,6 +26,13 @@ char* String_Split(char* str, const char* delimiter);
 
 bool String_OnlyWithChars(char* word,char* chars);
 
+/*
+    compare between 2 strings characters till maxLen or till NULL char
+
+    return : -1 - str1 is dictionarly gratter then str2
+             0  - the strings are the same
+             1  - str2 is dictionarly gratter then str1
+*/
 int String_Compare(const char* str1, const char* str2, size_t maxLen);
 
 void String_SimplfyLine(char* line);
