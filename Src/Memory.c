@@ -23,7 +23,7 @@ void Memory_Set(void* mem,  uint8_t value, size_t length)
     memset(mem, value, length);
 }
 
-size_t Memory_Copy(void* mem1, void* mem2, size_t length)
+size_t Memory_Copy(void* mem1,const  void* mem2, size_t length)
 {
     /* validaty check*/
     if(!mem1 || !mem2)

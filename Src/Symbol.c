@@ -36,11 +36,6 @@ Symbol Symbol_Copy(Symbol* other)
     return symbol;
 }
 
-void Symbol_Print(Symbol* symbol)
-{
-    printf("%s : %lu ---- %s\n",symbol->name, symbol->address, symbol->type?"Private":"Public");
-}
-
 void Symbol_ChangeType(Symbol* symbol,ESymbolType type)
 {
     symbol->type = type;

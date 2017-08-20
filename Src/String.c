@@ -37,6 +37,19 @@ char* String_Split(char* str, const char* delimiter)
     return strtok(str,delimiter);
 }
 
+char* String_SplitToTwo(char* str,char ch)
+{
+    char* ptr = strchr(str,ch);
+    if(!ptr || String_Len(str) == (ptr - str))
+    {
+        return NULL;
+    }
+
+    *ptr = 0;
+    ptr++;
+    return ptr;
+}
+
 bool String_OnlyWithChars(char* word, char* chars)
 {
     /* if the length of the segment with the valid chars is the same as the intire length then its only with this chars*/
@@ -54,6 +67,11 @@ int String_Compare(const char* str1, const char* str2, size_t maxLen)
 void String_SimplfyLine(char* line)
 {
     char* word = NULL;
+
+    if(!line)
+    {
+        return;
+    }
     /*create buffer in the line size plus null*/
     size_t length = String_Len(line + 1);
     char* buffer = (char*)Memory_Allocate(length);

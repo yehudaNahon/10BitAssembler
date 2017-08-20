@@ -12,13 +12,13 @@
 #include "Memory.h"
 #include "LinkedList.h"
 #include "GeneralMacros.h"
-#include "Handlers.h"
+#include "CommandHandler.h"
+#include "DataHandler.h"
 
 #define LABEL_INDICATOR (':')
-#define LABEL_SPLITER (":")
 #define LIGAL_LABEL_CH LETTERS_CH UPPER_CASE_CH NUMBERS_CH
 
-#define MAX_LINE_LEN (80)
+#define MAX_LINE_LEN (800)
 #define COMMENT_CH (';')
 
 
@@ -75,17 +75,22 @@ void Assembler_AddToLinkedList(void* line, size_t* len, void* context)
 
 }
 
-void Assembler_CreateAssembly(void* data, size_t* len, void* context)
+void Assembler_CreateAssembly(const void* data, size_t len, void* context)
 {
     Assembly* prog = context;
-    char* line = data;
+    char line[MAX_LINE_LEN];
+    char* command = line;
+    char* params = NULL;
     char* label = NULL;
     Symbol symbol;
 
-    if(!prog || !line)
+    if(!prog || !data)
     {
         return;
     }
+    
+    /* copy the line to a buffer to mess oround with*/
+    Memory_Copy(line, data, len);
 
     /* clean the line from tabs and stuff*/
     String_SimplfyLine(line);
@@ -98,32 +103,43 @@ void Assembler_CreateAssembly(void* data, size_t* len, void* context)
     
     if(Assembly_HasLabel(line))
     {
-        label = String_Split(line, LABEL_SPLITER);
-        line = String_Split(NULL, LABEL_SPLITER);
-        String_SimplfyLine(line);
+        command = String_SplitToTwo(line, LABEL_INDICATOR);
+        label = line;
+        String_SimplfyLine(command);
         String_SimplfyLine(label);
     }
     
-    if(DataHandler_IsDataLine(line))
+    params = String_SplitToTwo(command, SPACE_CH);
+    
+    /*printf("%s : %s - %s\n",label,command,params);*/
+
+
+    if(DataHandler_IsLine(command))
     {
-        prog->dataCounter += DataHandler_AddDataLine(line, NULL);
+        prog->data.counter += DataHandler_AddLine(command,params, &prog->data.memory);
         if(label)
         {
-            symbol = Symbol_Init(label,prog->dataCounter);
-            SymbolTable_AddSymbol(&prog->dataSymbols, &symbol);
+            symbol = Symbol_Init(label,prog->data.counter);
+            SymbolTable_Add(&prog->data.symbol, symbol);
         }
     }
-    else if(CommandHandler_IsCommandLine(line))
+    else if(CommandHandler_IsLine(command))
     {
-        prog->instructionCounter += CommandHandler_AddCommandLine(line, NULL);
+        prog->command.counter += CommandHandler_AddLine(command,params,&prog->command.memory);
         if(label)
         {
-            symbol = Symbol_Init(label,prog->instructionCounter);
-            SymbolTable_AddSymbol(&prog->codeSymbols, &symbol);    
+            symbol = Symbol_Init(label,prog->command.counter);
+            SymbolTable_Add(&prog->command.symbol, symbol);    
         }
     }
 }
 
+
+void PrintSymbol(const void* data,size_t len, void* context)
+{
+    const Symbol* symbol = data;
+    printf("%s : %lu ---- %s\n",symbol->name, symbol->address, symbol->type?"Private":"Public");
+}
 
 bool Assembler_AssembleFile(char* asmFile)
 {
@@ -138,15 +154,15 @@ bool Assembler_AssembleFile(char* asmFile)
         return false;
     }
 
-    
     /* create symbol table*/
     File_ForEach(file, &Assembler_CreateAssembly,&assembly);
 
     printf("*********** DATA ************\n");
-    SymbolTable_Print(&assembly.dataSymbols);
+    SymbolTable_ForEach(assembly.data.symbol, &PrintSymbol, NULL);
 
+    
     printf("*********** CODE ************\n");
-    SymbolTable_Print(&assembly.codeSymbols);
+    SymbolTable_ForEach(assembly.command.symbol, &PrintSymbol, NULL);
 
     /*close the file*/
     if(!File_Close(file))

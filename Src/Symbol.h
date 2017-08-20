@@ -29,8 +29,6 @@ Symbol Symbol_Init(char* name, size_t address);
 
 Symbol Symbol_Copy(Symbol* oldSymbol);
 
-void Symbol_Print(Symbol* symbol);
-
 void Symbol_ChangeType(Symbol* symbol,ESymbolType type);
 
 void Symbol_Delete(Symbol* symbol);

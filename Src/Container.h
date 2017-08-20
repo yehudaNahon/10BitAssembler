@@ -26,10 +26,10 @@ typedef bool (*Finder)(void*,size_t,void*);
 
     there arguments are:
                 - a pointer to the data
-                - the datas length (a pointer for enabling datas length to change)
+                - the datas length
                 - aditional context from the user of the container
 */
-typedef void (*Iterator)(void*,size_t*,void*);
+typedef void (*Iterator)(const void*,size_t,void*);
 
 /*
     This is a cleaner function pointer generally used to help clean any data when preforming a realese of resources

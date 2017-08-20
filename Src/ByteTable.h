@@ -1,28 +1,28 @@
-#ifndef SYMBOL_TABLE_H
-#define SYMBOL_TABLE_H
+#ifndef Byte_TABLE_H
+#define Byte_TABLE_H
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #include "Container.h"
-#include "Symbol.h"
+#include "Byte.h"
 
 /**
     a table for all labels of a type 
 */
-typedef struct SymbolTable
+typedef struct ByteTable
 {
     size_t count;
-    Symbol *elements;
-}SymbolTable;
+    Byte *elements;
+}ByteTable;
 
 /*
     Initialize a table
 
     return : a new table
 */
-SymbolTable SymbolTable_Init();
+ByteTable ByteTable_Init();
 
 /**
     Adds an element to the table
@@ -33,14 +33,14 @@ SymbolTable SymbolTable_Init();
     return :    true - success
                 false - failed
 */
-bool SymbolTable_Add(SymbolTable* table,Symbol element);
+bool ByteTable_Add(ByteTable* table,Byte element);
 
 /**
-    Clean all resources of the Symbol Table
+    Clean all resources of the Byte Table
 
     table - the table to delete
 */
-void SymbolTable_Delete(SymbolTable* table);
+void ByteTable_Delete(ByteTable* table);
 
 /*
     for each element in the table call the iterator function 
@@ -49,7 +49,7 @@ void SymbolTable_Delete(SymbolTable* table);
     iter - the iterator to call
     context - some info to send to the iterator each time with the element
 */
-void SymbolTable_ForEach(const SymbolTable table, Iterator iter, void* context);
+void ByteTable_ForEach(const ByteTable table, Iterator iter, void* context);
 
 
 /*
@@ -57,7 +57,7 @@ void SymbolTable_ForEach(const SymbolTable table, Iterator iter, void* context);
 
     return - the number of elements
 */
-size_t SymbolTable_Len(const SymbolTable table);
+size_t ByteTable_Len(const ByteTable table);
 
 /*
     return a pointer to the element in the table
@@ -67,7 +67,7 @@ size_t SymbolTable_Len(const SymbolTable table);
 
     return - a pointer to the element NULL if failed
 */
-Symbol* SymbolTable_GetElement(SymbolTable table, size_t index);
+Byte* ByteTable_GetElement(ByteTable table, size_t index);
 
 
 /*
@@ -79,7 +79,7 @@ Symbol* SymbolTable_GetElement(SymbolTable table, size_t index);
     return : true - successfully remove the element
              false - failed removing the element
 */
-bool SymbolTable_Remove(SymbolTable* table, size_t index);
+bool ByteTable_Remove(ByteTable* table, size_t index);
 
 
 #endif

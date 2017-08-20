@@ -2,24 +2,24 @@
 #include <stdint.h>
 #include <stddef.h>
 
-/* General for all words in the assembly file*/
-#define WORD_LEN (10)
+/* General for all bytes in the assembly file*/
+#define BYTE_LEN (10)
 
 /* General for all commands in the assembly file*/
 #define TYPE_BITS_NUM (2)
 
-/* For First command word*/
+/* For First command byte*/
 #define OPERAND_TYPE_BITS_NUM (2)
-#define OPCODE_TYPE_BITS_NUM (WORD_LEN - TYPE_BITS_NUM - (OPERAND_TYPE_BITS_NUM * 2))
+#define OPCODE_TYPE_BITS_NUM (BYTE_LEN - TYPE_BITS_NUM - (OPERAND_TYPE_BITS_NUM * 2))
 
-/* For all extra info word of the command*/
-#define OPERAND_ADDRESS_BITS_NUM (WORD_LEN - TYPE_BITS_NUM)
+/* For all extra info byte of the command*/
+#define OPERAND_ADDRESS_BITS_NUM (BYTE_LEN - TYPE_BITS_NUM)
 #define MAX_EXTRA_OPERANDS (2)
 
-typedef struct Word
+typedef struct Byte
 {
-    uint16_t size :WORD_LEN;
-}Word;
+    uint16_t size :BYTE_LEN;
+}Byte;
 
 
 typedef enum EEncodingType
@@ -37,31 +37,31 @@ typedef enum EAddressingType
     eDirectRegister
 }EAddressingType;
 
-typedef struct CommandWord
+typedef struct CommandByte
 {
     uint8_t type :TYPE_BITS_NUM;
     uint8_t destOperand :OPERAND_TYPE_BITS_NUM;
     uint8_t srcOperand :OPERAND_TYPE_BITS_NUM;
     uint8_t opcode :OPCODE_TYPE_BITS_NUM;
-}CommandWord;
+}CommandByte;
 
-typedef struct OperandWord
+typedef struct OperandByte
 {
     uint8_t type :TYPE_BITS_NUM;
     uint8_t address :OPERAND_ADDRESS_BITS_NUM;
-}OperandWord;
+}OperandByte;
 
-typedef struct DataWord
+typedef struct DataByte
 {
-    uint16_t value :WORD_LEN;
-}DataWord;
+    uint16_t value :BYTE_LEN;
+}DataByte;
 
 
 typedef struct Command
 {
     size_t numOfOperands;
-    CommandWord command;
-    OperandWord exraInfo[MAX_EXTRA_OPERANDS];
+    CommandByte command;
+    OperandByte exraInfo[MAX_EXTRA_OPERANDS];
 }Command;
 
 

@@ -1,17 +1,17 @@
-#include "SymbolTable.h"
+#include "ByteTable.h"
 #include "Log.h"
 #include "Memory.h"
 
-SymbolTable SymbolTable_Init()
+ByteTable ByteTable_Init()
 {
-    SymbolTable table;
+    ByteTable table;
     table.count = 0;
     table.elements = NULL;
 
     return table;
 }
 
-void SymbolTable_Delete(SymbolTable* table)
+void ByteTable_Delete(ByteTable* table)
 {
     int i = 0;
     
@@ -19,14 +19,13 @@ void SymbolTable_Delete(SymbolTable* table)
     for(i = 0; i < table->count; i++)
     {
         /* call the deleting function of element and delete the memory block*/
-        Symbol_Delete(&table->elements[i]);
         Memory_Delete(&table->elements[i]);
     }
 
     table->count = 0;
 }
 
-bool SymbolTable_Add(SymbolTable* table,Symbol element)
+bool ByteTable_Add(ByteTable* table,Byte element)
 {
     /* validty check*/
     if(!table)
@@ -38,7 +37,7 @@ bool SymbolTable_Add(SymbolTable* table,Symbol element)
     locate a new block of memory to for the new element by the Memory.h docs in case there no
     old memory this will create a barnd new element
     */
-    table->elements = Memory_ReAllocate(table->elements, sizeof(Symbol) * (table->count + 1));
+    table->elements = Memory_ReAllocate(table->elements, sizeof(Byte) * (table->count + 1));
     if(!table->elements)
     {
         Log(eError, MEMORY_ERR);
@@ -47,29 +46,29 @@ bool SymbolTable_Add(SymbolTable* table,Symbol element)
     }
 
     /* Initiate the element with the element data*/
-    table->elements[table->count] = Symbol_Copy(&element);
+    table->elements[table->count] = element;
     table->count++;
 
     return true;
 }
 
 
-void SymbolTable_ForEach(const SymbolTable table, Iterator iter, void* context)
+void ByteTable_ForEach(const ByteTable table, Iterator iter, void* context)
 {
     size_t i=0;
 
     for(i=0; i< table.count; i++)
     {
-        iter(&table.elements[i],sizeof(Symbol), context);
+        iter(&table.elements[i],sizeof(Byte), context);
     }
 }
 
-size_t SymbolTable_Len(const SymbolTable table)
+size_t ByteTable_Len(const ByteTable table)
 {
     return table.count;
 }
 
-Symbol* SymbolTable_GetElement(SymbolTable table, size_t index)
+Byte* ByteTable_GetElement(ByteTable table, size_t index)
 {
     if(table.count > index)
     {
@@ -79,14 +78,13 @@ Symbol* SymbolTable_GetElement(SymbolTable table, size_t index)
     return &table.elements[index];
 }
 
-bool SymbolTable_Remove(SymbolTable* table, size_t index)
+bool ByteTable_Remove(ByteTable* table, size_t index)
 {
     if(!table || index > table->count)
     {
         return false;
     }
 
-    Symbol_Delete(&table->elements[index]);
     Memory_Delete(&table->elements[index]);
     
     return true;

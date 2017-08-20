@@ -69,7 +69,7 @@ void File_ForEach(FILE* file,Iterator iter, void* context)
 	{
 		lineCount = 0;
 		while (File_GetLine(file, &line, &len) != FD_ERROR) {
-			iter(line,&len,context);
+			iter(line,len,context);
 			lineCount++;
 		}
 	}
