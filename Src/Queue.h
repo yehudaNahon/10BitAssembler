@@ -8,19 +8,19 @@
 
 typedef struct Queue
 {
-    size_t count;
-    LinkedList* head;
-    LinkedList* tail;
+    LinkedList head;
 }Queue;
 
 Queue Queue_Init();
 
-bool Queue_enqueue(Queue* queue, void* data);
+bool Queue_enqueue(Queue* queue,const void* data, size_t len);
 
-void* Queue_dequeue(Queue* queue);
+size_t Queue_dequeue(Queue* queue, void* o_data);
 
-bool Queue_Empty(Queue* queue);
+bool Queue_Empty(Queue queue);
 
-void* Queue_Peek(Queue* queue);
+size_t Queue_Peek(Queue queue,void* o_data);
+
+void Queue_ForEach(Queue queue,Iterator iter,void* context);
 
 #endif

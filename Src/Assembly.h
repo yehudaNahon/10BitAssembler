@@ -16,7 +16,7 @@ typedef struct Assembly
     char fileName[MAX_FILE_NAME];
     DataType data;
     DataType command;
-    Queue commands;
+    Queue penndingCommands;
 }Assembly;
 
 /*

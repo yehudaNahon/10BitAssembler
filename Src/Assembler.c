@@ -64,17 +64,6 @@ bool Assembler_IsCodeLine(char* line)
     return true;
 }
 
-
-void Assembler_AddToLinkedList(void* line, size_t* len, void* context)
-{
-    LinkedList* list = (LinkedList*)context;
-    if(list)
-    {
-        LinkedList_Add(list, line, *len);
-    }
-
-}
-
 void Assembler_CreateAssembly(const void* data, size_t len, void* context)
 {
     Assembly* prog = context;
@@ -82,6 +71,8 @@ void Assembler_CreateAssembly(const void* data, size_t len, void* context)
     char* command = line;
     char* params = NULL;
     char* label = NULL;
+    char* ptr = NULL;
+    int i=0;
     Symbol symbol;
     
     if(!prog || !data)
@@ -130,7 +121,10 @@ void Assembler_CreateAssembly(const void* data, size_t len, void* context)
             symbol = Symbol_Init(label,prog->command.counter + 1);
             SymbolTable_Add(&prog->command.symbol, symbol);    
         }
-        prog->command.counter += CommandHandler_AddLine(command,params,&prog->command.memory);
+        prog->command.counter += CommandHandler_GetLineSize(command);
+
+        /* add the pennding queue*/
+        Queue_enqueue(&prog->penndingCommands, data, len);
     }
 }
 
@@ -145,6 +139,11 @@ void PrintByte(const void* data,size_t len, void* context)
 {
     const Byte* byte = data;
     printf("%d\n",byte->value);
+}
+
+void PrintLine(const void* data, size_t len, void* context)
+{
+    printf("%s\n",data);
 }
 
 bool Assembler_AssembleFile(char* asmFile)
@@ -162,6 +161,9 @@ bool Assembler_AssembleFile(char* asmFile)
 
     /* create symbol table*/
     File_ForEach(file, &Assembler_CreateAssembly,&assembly);
+
+    printf("******** PENNDING COMMANDS ********\n");
+    Queue_ForEach(assembly.penndingCommands,&PrintLine,NULL);
 
     printf("******** DATA MEMORY **************\n");
     ByteTable_ForEach(assembly.data.memory, &PrintByte, NULL);

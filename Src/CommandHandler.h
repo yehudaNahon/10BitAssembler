@@ -5,7 +5,8 @@
 
 bool CommandHandler_IsLine(char* command);
 
-size_t CommandHandler_AddLine(char* command,char* params, ByteTable* table);
+size_t CommandHandler_GetLineSize(char* command);
 
+size_t CommandHandler_AddLine(char* command,char* params, ByteTable* table);
 
 #endif

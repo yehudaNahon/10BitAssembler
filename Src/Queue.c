@@ -5,67 +5,40 @@
 Queue Queue_Init()
 {
     Queue new;
-    new.count = 0;
-    new.head = NULL;
-    new.tail = NULL;
+    new.head =  LinkedList_Init();
 
     return new;
 }
 
-bool Queue_enqueue(Queue* queue, void* data)
+bool Queue_enqueue(Queue* queue,const void* data, size_t len)
 {
-    /* allocate memory for the new LinkedList*/
-    LinkedList* ptr = Memory_Allocate(sizeof(LinkedList));
-    if(!ptr)
-    {
-        Log(eError, MEMORY_ERR);
-        return false;
-    }
+    return LinkedList_Add(&queue->head, data, len);
+}
 
-    /* initialize new LinkedList*/
-    LinkedList_Init(ptr,data);
-
-    /* update fields */
-    queue->tail = ptr;
-    if(!queue->head)
-    {
-        queue->head = ptr;
-    }
-
-    queue->count++;
-
+/*
+    Will return true always and by that will get the first element
+*/
+bool GetFirst(void* data, size_t len, void* context)
+{
     return true;
 }
 
-void* Queue_dequeue(Queue* queue)
+size_t Queue_dequeue(Queue* queue, void* o_data)
 {
-    LinkedList* ptr = NULL;
-    void* data = NULL;
-
-    /* validaty check*/
-    if(queue->count == 0 || !queue->head)
-    {
-        return NULL;
-    }
-
-    /*change the queue and save the unpointer LinkedList*/
-    ptr = queue->head;
-    queue->head = ptr->next;
-    data = ptr->data;
-    
-    /* delete the LinkedList block*/
-    Memory_Delete(ptr);
-
-    return data;
+    return LinkedList_Remove(&queue->head, o_data,&GetFirst, NULL);
 }
 
-bool Queue_Empty(Queue* queue)
+bool Queue_Empty(Queue queue)
 {
-    return queue->count == 0;
+    return LinkedList_Len(queue.head);
 }
 
-void* Queue_Peek(Queue* queue)
+size_t Queue_Peek(Queue queue,void* o_data)
 {
-    return queue? ( queue->head? queue->head->data : NULL ) : NULL;
+    return LinkedList_Get(queue.head,0,o_data);
 }
 
+void Queue_ForEach(Queue queue,Iterator iter,void* context)
+{
+    LinkedList_ForEach(queue.head,iter,context);
+}
