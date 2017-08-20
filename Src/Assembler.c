@@ -64,15 +64,13 @@ bool Assembler_IsCodeLine(char* line)
     return true;
 }
 
-void Assembler_CreateAssembly(const void* data, size_t len, void* context)
+void Assembler_CreateSymbols(const void* data, size_t len, void* context)
 {
     Assembly* prog = context;
     char line[MAX_LINE_LEN];
     char* command = line;
     char* params = NULL;
     char* label = NULL;
-    char* ptr = NULL;
-    int i=0;
     Symbol symbol;
     
     if(!prog || !data)
@@ -122,12 +120,42 @@ void Assembler_CreateAssembly(const void* data, size_t len, void* context)
             SymbolTable_Add(&prog->command.symbol, symbol);    
         }
         prog->command.counter += CommandHandler_GetLineSize(command);
-
+        
+        if(params)
+        {
+            *(params - 1) = SPACE_CH;
+        }
         /* add the pennding queue*/
-        Queue_enqueue(&prog->penndingCommands, data, len);
+        Queue_enqueue(&prog->penndingCommands, command, String_Len(command) + 1);
     }
 }
 
+void Assembler_ParseCommands(const void* data, size_t len, void* context)
+{
+    Assembly* prog = context;
+    char line[MAX_LINE_LEN];
+    char* command = line;
+    char* params = NULL;
+    
+    if(!prog || !data)
+    {
+        return;
+    }
+    /* copy the line to a buffer to mess oround with*/
+    Memory_Copy(line, data, len);
+    
+    /* clean the line from tabs and stuff*/
+    String_SimplfyLine(line);
+
+    params = String_SplitToTwo(command, SPACE_CH);
+    
+    /*should always be true*/
+    if(CommandHandler_IsLine(command))
+    {
+        printf("%s %s\n",command,params);
+        CommandHandler_AddLine(command,params, &prog->command.memory);
+    }
+}
 
 void PrintSymbol(const void* data,size_t len, void* context)
 {
@@ -160,7 +188,7 @@ bool Assembler_AssembleFile(char* asmFile)
     }
 
     /* create symbol table*/
-    File_ForEach(file, &Assembler_CreateAssembly,&assembly);
+    File_ForEach(file, &Assembler_CreateSymbols,&assembly);
 
     printf("******** PENNDING COMMANDS ********\n");
     Queue_ForEach(assembly.penndingCommands,&PrintLine,NULL);
@@ -170,10 +198,12 @@ bool Assembler_AssembleFile(char* asmFile)
 
     printf("*********** DATA SYMBOLS************\n");
     SymbolTable_ForEach(assembly.data.symbol, &PrintSymbol, NULL);
-
     
     printf("*********** CODE SYMBOLS************\n");
     SymbolTable_ForEach(assembly.command.symbol, &PrintSymbol, NULL);
+
+    printf("\n");
+    Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly);
 
     /*close the file*/
     if(!File_Close(file))
