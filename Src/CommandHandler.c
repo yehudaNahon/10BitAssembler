@@ -34,9 +34,9 @@ bool CommandHandler_IsLine(char* command)
     return Handler_IsInList(command, commandHandlers, COMMAND_NUM_OF_ELEM);
 }
 
-size_t CommandHandler_AddLine(char* command, char* params, ByteTable* list)
+size_t CommandHandler_AddLine(char* command, char* params, ByteTable* table)
 {
-    return Handler_AddLine(command, list, commandHandlers, COMMAND_NUM_OF_ELEM);
+    return Handler_AddLine(command, params, table, commandHandlers, COMMAND_NUM_OF_ELEM);
 }
 
 

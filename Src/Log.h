@@ -1,8 +1,11 @@
 #ifndef LOG_H
 #define LOG_H
 
-#define MEMORY_ERR ("Failed Locating Memory")
+#include <stdarg.h>
 
+
+#define MEMORY_ERR ("Failed Locating Memory")
+#define PARAM_ERR ("Recieved incorrect parameter in function call")
 typedef enum ELogType
 {
     eWarning,
@@ -16,7 +19,7 @@ typedef enum ELogType
     type - a error log type will be one on the ELogType enum
     message - a null terminated ascii formated string with aditional information about the error
 */
-void Log(ELogType type,const char* message);
+void Log(ELogType type, const char *fmt, ...);
 
 
 #endif

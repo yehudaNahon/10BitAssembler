@@ -28,6 +28,8 @@ char* String_SplitToTwo(char* str,char ch);
 
 bool String_OnlyWithChars(char* word,char* chars);
 
+size_t String_SubString(char* str,char* buffer, size_t begin, size_t count);
+
 /*
     compare between 2 strings characters till maxLen or till NULL char
 

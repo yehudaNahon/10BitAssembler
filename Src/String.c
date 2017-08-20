@@ -47,6 +47,7 @@ char* String_SplitToTwo(char* str,char ch)
 
     *ptr = 0;
     ptr++;
+
     return ptr;
 }
 
@@ -56,6 +57,15 @@ bool String_OnlyWithChars(char* word, char* chars)
     return strspn(word,chars) == strlen(word);
 }
 
+size_t String_SubString(char* str,char* buffer, size_t begin, size_t count)
+{
+    if(!str || !buffer || begin + count > String_Len(str))
+    {
+        return 0;
+    }
+
+    return Memory_Copy(buffer,&str[begin],count);
+}
 
 int String_Compare(const char* str1, const char* str2, size_t maxLen)
 {

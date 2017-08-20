@@ -83,7 +83,7 @@ void Assembler_CreateAssembly(const void* data, size_t len, void* context)
     char* params = NULL;
     char* label = NULL;
     Symbol symbol;
-
+    
     if(!prog || !data)
     {
         return;
@@ -116,21 +116,21 @@ void Assembler_CreateAssembly(const void* data, size_t len, void* context)
 
     if(DataHandler_IsLine(command))
     {
-        prog->data.counter += DataHandler_AddLine(command,params, &prog->data.memory);
         if(label)
         {
-            symbol = Symbol_Init(label,prog->data.counter);
+            symbol = Symbol_Init(label,prog->data.counter + 1);
             SymbolTable_Add(&prog->data.symbol, symbol);
         }
+        prog->data.counter += DataHandler_AddLine(command,params, &prog->data.memory);
     }
     else if(CommandHandler_IsLine(command))
     {
-        prog->command.counter += CommandHandler_AddLine(command,params,&prog->command.memory);
         if(label)
         {
-            symbol = Symbol_Init(label,prog->command.counter);
+            symbol = Symbol_Init(label,prog->command.counter + 1);
             SymbolTable_Add(&prog->command.symbol, symbol);    
         }
+        prog->command.counter += CommandHandler_AddLine(command,params,&prog->command.memory);
     }
 }
 
@@ -139,6 +139,12 @@ void PrintSymbol(const void* data,size_t len, void* context)
 {
     const Symbol* symbol = data;
     printf("%s : %lu ---- %s\n",symbol->name, symbol->address, symbol->type?"Private":"Public");
+}
+
+void PrintByte(const void* data,size_t len, void* context)
+{
+    const Byte* byte = data;
+    printf("%d\n",byte->value);
 }
 
 bool Assembler_AssembleFile(char* asmFile)
@@ -150,18 +156,21 @@ bool Assembler_AssembleFile(char* asmFile)
 
     if(!file)
     {
-        Log(eError, "Could not open file");
+        Log(eError,"Could not open file");
         return false;
     }
 
     /* create symbol table*/
     File_ForEach(file, &Assembler_CreateAssembly,&assembly);
 
-    printf("*********** DATA ************\n");
+    printf("******** DATA MEMORY **************\n");
+    ByteTable_ForEach(assembly.data.memory, &PrintByte, NULL);
+
+    printf("*********** DATA SYMBOLS************\n");
     SymbolTable_ForEach(assembly.data.symbol, &PrintSymbol, NULL);
 
     
-    printf("*********** CODE ************\n");
+    printf("*********** CODE SYMBOLS************\n");
     SymbolTable_ForEach(assembly.command.symbol, &PrintSymbol, NULL);
 
     /*close the file*/

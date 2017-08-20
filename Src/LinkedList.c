@@ -183,7 +183,7 @@ void LinkedList_ForEach(LinkedList* list,Iterator iter, void* context)
     /*if theres data*/
     if(list->data && iter)
     {
-        iter(list->data,&list->length,context);
+        iter(list->data,list->length,context);
     }
     
     /*if theres child*/

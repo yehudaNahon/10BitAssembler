@@ -1,34 +1,18 @@
-#include "Log.h"
 #include <stdio.h>
-#include "GeneralMacros.h"
+#include "Log.h"
 
-#define MAX_STR (100)
-typedef struct TypeConfig
-{
-    char str[MAX_STR];
-    /*TODO : add colors support*/
-}TypeConfig;
-
-TypeConfig TypeLookUpTable[] = {
-    {"Warning"},
-    {"Error"},
-    {"Info"}
+const char* LookUpTable[] = {
+    "Warning",
+    "Error",
+    "Info"
 };
 
-TypeConfig DefualtType = {"UnKnown"};
-
-void Log(ELogType type,const char* message)
+void Log(ELogType type, const char *fmt, ...)
 {
-    TypeConfig *config;
-
-    if((int)type < NUM_OF_ELEM(TypeLookUpTable))
-    {
-        config = &TypeLookUpTable[(int)type];
-    }
-    else
-    {
-        config = &DefualtType;
-    }
-
-    printf("%s :: %s\n", config->str, message);
+    va_list args;
+    va_start(args, fmt);
+    printf("%s :: ",LookUpTable[type]);
+    vfprintf(stdout, fmt, args);
+    printf("\n");
+    va_end(args);
 }
