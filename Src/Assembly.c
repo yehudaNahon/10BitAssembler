@@ -2,15 +2,6 @@
 #include "Memory.h"
 #include "String.h"
 
-DataType DataType_Init()
-{
-    DataType type;
-    type.symbol = SymbolTable_Init();
-    type.memory = ByteTable_Init();
-    type.counter = 0;
-
-    return type;
-}
 
 Assembly Assembly_Init(char* fileName)
 {
@@ -21,10 +12,11 @@ Assembly Assembly_Init(char* fileName)
     Memory_Copy(assembly.fileName, fileName, String_Len(fileName));
 
     /*create sybol table*/
-    assembly.data = DataType_Init();
-    assembly.command = DataType_Init();
-
-    assembly.commands = Queue_Init();
+    assembly.data = Segment_Init();
+    assembly.command = Segment_Init();
+    assembly.symbol = SymbolTable_Init();
+    
+    assembly.penndingCommands = Queue_Init();
 
     return assembly;
 }

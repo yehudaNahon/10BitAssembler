@@ -1,21 +1,13 @@
-#include "SymbolTable.h"
 #include "OSDefines.h"
 #include "Queue.h"
-#include "ByteTable.h"
-
-typedef struct DataType
-{
-    SymbolTable symbol;
-    ByteTable memory;
-    size_t counter;
-}DataType;
-
+#include "Segment.h"
 
 typedef struct Assembly
 {
     char fileName[MAX_FILE_NAME];
-    DataType data;
-    DataType command;
+    Segment data;
+    Segment command;
+    SymbolTable symbol;    
     Queue penndingCommands;
 }Assembly;
 
