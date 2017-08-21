@@ -158,7 +158,7 @@ size_t DataHandler_DataHandler(char* params, void* table)
 
 
 #define DATA_NUM_OF_ELEM (3)
-Handler dataHandlers[] = {
+Handler dataHandlers[DATA_NUM_OF_ELEM] = {
     {".data", &DataHandler_DataHandler},
     {".mat", &DataHandler_MatHandler},
     {".string", &DataHandler_StringHandler}
@@ -167,10 +167,10 @@ Handler dataHandlers[] = {
 
 bool DataHandler_IsLine(char* command)
 {
-    return Handler_IsInList(command, dataHandlers, DATA_NUM_OF_ELEM);
+    return Handler_HasHandler(command, dataHandlers, DATA_NUM_OF_ELEM);
 }
 
-size_t DataHandler_AddLine(char* command,char* params, ByteTable* table)
+size_t DataHandler_Handle(char* command,char* params, ByteTable* table)
 {
-    return Handler_AddLine(command, params, table, dataHandlers, DATA_NUM_OF_ELEM);
+    return Handler_Handle(command, params, table, dataHandlers, DATA_NUM_OF_ELEM);
 }

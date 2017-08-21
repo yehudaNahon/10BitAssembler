@@ -102,7 +102,6 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     
     /*printf("%s : %s - %s\n",label,command,params);*/
 
-
     if(DataHandler_IsLine(command))
     {
         if(label)
@@ -110,7 +109,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
             symbol = Symbol_Init(label,prog->data.counter + 1);
             SymbolTable_Add(&prog->symbol, symbol);
         }
-        prog->data.counter += DataHandler_AddLine(command,params, &prog->data.memory);
+        prog->data.counter += DataHandler_Handle(command,params, &prog->data.memory);
     }
     else if(CommandHandler_IsLine(command))
     {
@@ -153,7 +152,7 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     if(CommandHandler_IsLine(command))
     {
         printf("%s %s\n",command,params);
-        CommandHandler_AddLine(command,params, &prog->command.memory);
+        CommandHandler_Handle(command,params, &prog->command.memory);
     }
 }
 

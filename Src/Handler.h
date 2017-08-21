@@ -3,7 +3,6 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "ByteTable.h"
 
 
 typedef size_t (*Action) (char*,void*);
@@ -15,9 +14,9 @@ typedef struct Handler
 
 }Handler;
 
-size_t Handler_AddLine(char* command,char* params, ByteTable* table, Handler handlers[], size_t numOfElements);
+size_t Handler_Handle(char* command,char* params, void* context, Handler handlers[], size_t numOfElements);
 
-bool Handler_IsInList(char* command,Handler handlers[], size_t numOfElements);
+bool Handler_HasHandler(char* command,Handler handlers[], size_t numOfElements);
 
 
 #endif

@@ -128,12 +128,12 @@ CommandType commandTypes[COMMAND_NUM_OF_ELEM] = {
 
 bool CommandHandler_IsLine(char* command)
 {
-    return Handler_IsInList(command, commandHandlers, COMMAND_NUM_OF_ELEM);
+    return Handler_HasHandler(command, commandHandlers, COMMAND_NUM_OF_ELEM);
 }
 
-size_t CommandHandler_AddLine(char* command, char* params, ByteTable* table)
+size_t CommandHandler_Handle(char* command, char* params, Programme* prog)
 {
-    return Handler_AddLine(command, params, table, commandHandlers, COMMAND_NUM_OF_ELEM);
+    return Handler_Handle(command, params, prog, commandHandlers, COMMAND_NUM_OF_ELEM);
 }
 
 size_t CommandHandler_GetLineSize(char* command)

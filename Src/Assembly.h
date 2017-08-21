@@ -2,12 +2,17 @@
 #include "Queue.h"
 #include "Segment.h"
 
+typedef struct Programme
+{
+    Segment data;
+    Segment code;
+    SymbolTable symbol;
+}Programme;
+
 typedef struct Assembly
 {
     char fileName[MAX_FILE_NAME];
-    Segment data;
-    Segment command;
-    SymbolTable symbol;    
+    Programme prog;    
     Queue penndingCommands;
 }Assembly;
 
@@ -16,7 +21,7 @@ typedef struct Assembly
 */
 Assembly Assembly_Init(char* fileName);
 
-
+Programme Programme_Init(); 
 
 
 
