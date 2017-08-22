@@ -26,7 +26,33 @@ void DataHandler_AddToList(int value, List* bytes)
 }
 
 
-size_t DataHandler_StringHandler(char* command, char* params, void* list)
+
+
+size_t DataHandler_CalculateMatSize(char* mat)
+{
+    char* numberStr = NULL;
+    int size = 1;
+    if(!mat)
+    {
+        Log(eError,PARAM_ERR);
+        return 0;
+    }
+    
+    numberStr = String_Split(mat, MAT_CLOSE);
+    do
+    {
+        if(numberStr[0] != MAT_OPEN)
+        {
+            Log(eError, "Recieved a illigal mat size format");
+            return size;
+        }
+        size *= Convert_StrToDecimal(&numberStr[1]);
+    }while((numberStr = String_Split(NULL, MAT_CLOSE)));
+    
+    return size;
+}
+
+size_t String_Handler(char* command, char* params, void* list)
 {
     char* ptr = NULL;
     size_t size = 0;
@@ -50,33 +76,7 @@ size_t DataHandler_StringHandler(char* command, char* params, void* list)
     return size;
 }
 
-
-size_t DataHandler_CalculateMatSize(char* mat)
-{
-    char* numberStr = NULL;
-    int size = 1;
-    if(!mat)
-    {
-        Log(eError,PARAM_ERR);
-        return 0;
-    }
-    
-    numberStr = String_Split(mat, MAT_CLOSE);
-    do
-    {
-        if(numberStr[0] != MAT_OPEN)
-        {
-            Log(eError, "Recieved a illigal mat size format");
-            return size;
-        }
-        size *= Convert_StrToDecimal(&numberStr[1]);
-    }while((numberStr = String_Split(NULL, MAT_CLOSE)));
-
-    return size;
-}
-
-
-size_t DataHandler_MatHandler(char* command, char* params, void* list)
+size_t Mat_Handler(char* command, char* params, void* list)
 {
     char* matSize = params;
     char* matVals = NULL;
@@ -127,7 +127,7 @@ size_t DataHandler_MatHandler(char* command, char* params, void* list)
 }
 
 
-size_t DataHandler_DataHandler(char* command, char* params, void* list)
+size_t Data_Handler(char* command, char* params, void* list)
 {
     size_t size = 0;
     char* valueStr = NULL;
@@ -154,12 +154,11 @@ size_t DataHandler_DataHandler(char* command, char* params, void* list)
     return size;
 }
 
-
 #define DATA_NUM_OF_ELEM (3)
 Handler dataHandlers[DATA_NUM_OF_ELEM] = {
-    {".data", &DataHandler_DataHandler},
-    {".mat", &DataHandler_MatHandler},
-    {".string", &DataHandler_StringHandler}
+    {".data", &Data_Handler},
+    {".mat", &Mat_Handler},
+    {".string", &String_Handler}
 };
 
 

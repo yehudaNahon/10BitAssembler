@@ -130,7 +130,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
 
 void Assembler_ParseCommands(const void* data, size_t len, void* context)
 {
-    Assembly* prog = context;
+    Programme* prog = context;
     char line[MAX_LINE_LEN];
     char* command = line;
     char* params = NULL;
@@ -150,7 +150,7 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     /*should always be true*/
     if(CommandHandler_IsLine(command))
     {
-        CommandHandler_Handle(command,params, &prog->prog);
+        CommandHandler_Handle(command,params, prog);
     }
 }
 
@@ -171,10 +171,11 @@ void PrintLine(const void* data, size_t len, void* context)
     printf("%s\n",data);
 }
 
+
 bool Assembler_AssembleFile(char* asmFile)
 {
     Assembly assembly = Assembly_Init(asmFile);
-
+    Programme* prog = &assembly.prog;
     /*open the file*/
     FILE* file = File_Open(asmFile, "r");
 
@@ -196,15 +197,20 @@ bool Assembler_AssembleFile(char* asmFile)
     printf("*********** SYMBOLS************\n");
     List_ForEach(assembly.prog.symbols, &PrintSymbol, NULL);
     
-    printf("\n");
-    Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly);
-
+    Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly.prog);
+    
+    printf("********** CODE **************\n");
+    /*printf("%lu %p\n",List_Len(assembly.prog.code.bytes),&prog->code.bytes);*/
+    List_ForEach(assembly.prog.code.bytes,&PrintCommandByteIter,NULL);
+    
     /*close the file*/
     if(!File_Close(file))
     {
         Log(eError, "Could not close file");
         return false;
     }
+
+    Assembly_Delete(&assembly);
 
     return true;
 }

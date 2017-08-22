@@ -34,4 +34,5 @@ Assembly Assembly_Init(char* fileName);
 
 Programme Programme_Init(); 
 
+void Assembly_Delete(Assembly* as);
 #endif

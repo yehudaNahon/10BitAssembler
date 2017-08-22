@@ -42,3 +42,8 @@ void Queue_ForEach(Queue queue,Iterator iter,void* context)
 {
     LinkedList_ForEach(queue.head,iter,context);
 }
+
+void Queue_Delete(Queue* queue,Cleaner cleaner,void* context)
+{
+    LinkedList_Delete(&queue->head, cleaner, context);
+}

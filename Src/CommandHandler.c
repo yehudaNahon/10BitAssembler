@@ -9,6 +9,11 @@ size_t Handle_NoOperandCommand(char* command, char* params,void* context);
 size_t Handle_SingleOperandCommands(char* command,char* params,void* context);
 size_t Handle_TwoOperandCommands(char* command, char* params, void* context);
 
+
+size_t Handle_NoOperandsSize(char* command, char* params,void* context);
+size_t Handle_SingleOperandsSize(char* command,char* params,void* context);
+size_t Handle_TwoOperandsSize(char* command, char* params, void* context);
+
 #define COMMAND_NUM_OF_ELEM (16)
 Handler commandHandlers[COMMAND_NUM_OF_ELEM] = {
     {"mov",&Handle_TwoOperandCommands},
@@ -29,30 +34,20 @@ Handler commandHandlers[COMMAND_NUM_OF_ELEM] = {
     {"stop",&Handle_NoOperandCommand}
 };
 
+
 void Operand_SetValue(OperandByte* op, int value)
 {
     op->value = value;
 }
 
-#define DIRECT_CH ('#')
-bool IsImmediate(char* param)
+
+int GetLabel(char* param,List symbols, Symbol* o_ptr)
 {
-    return param[0] == DIRECT_CH;
+    return List_FindData(symbols, o_ptr, &Symbol_Finder, param);
 }
 
-bool IsLabel(char* param,List symbols)
-{
-    void* ptr = NULL;
-    return List_FindData(symbols, ptr, &Symbol_Finder, param) != 0;
-}
 
-#define REG_CH ('r')
-bool IsRegAccess(char* param)
-{
-    return param[0] == REG_CH && Convert_StrToDecimal(&param[1]) < NUM_OF_REGS;
-}
-
-bool IsMatAccess(char* param,List symbols)
+int GetMatAccess(char* param, List symbols)
 {
     char buffer[MAX_LINE_LEN];
     char* ptr = NULL;
@@ -66,7 +61,6 @@ bool IsMatAccess(char* param,List symbols)
 
     String_Copy(buffer, param, MAX_LINE_LEN);
 
-    
     /* locate the mat []*/
     mat = String_SplitToTwo(buffer, MAT_OPEN);
     if(!mat)
@@ -75,7 +69,7 @@ bool IsMatAccess(char* param,List symbols)
     }
     
     /*check the place is a valid label*/
-    if(!IsLabel(buffer,symbols))
+    if(!IsLabel(buffer))
     {
         return false;
     }
@@ -97,43 +91,6 @@ bool IsMatAccess(char* param,List symbols)
     return true;
 }
 
-/* return number of operands used*/
-int GetParamValue(char* param,OperandByte op[],size_t len, Programme* prog)
-{
-    if(!op || len == 0 || !param || !prog)
-    {
-        return false;
-    }
-}
-
-EAddressingType GetOperandType(char* param, List symbols)
-{
-    if(!param)
-    {
-        return eInvalid;
-    }
-
-    if(IsImmediate(param))
-    {
-        return eImmediate;
-    }
-    else if(IsMatAccess(param,symbols))
-    {
-        return eMetAccess;   
-    }
-    else if(IsRegAccess(param))
-    {
-        return eDirectRegister;
-    }
-    else if(IsLabel(param, symbols))
-    {
-        return eDirect;   
-    }
-
-    return eInvalid;
-}
-
-
 int GetCommandCode(char* command)
 {
     int i=0;
@@ -147,37 +104,148 @@ int GetCommandCode(char* command)
     return -1;
 }
 
-size_t Handle_NoOperandCommand(char* command, char* params,void* context)
+void PrintCommandByteIter(const void* data, size_t len, void* context)
 {
-    return 1;
+    const CommandByte* byte = data;
+    printf(" opcode:%d\n dest:%d\n src:%d\n type:%d\n",byte->opcode,byte->destOperand,byte->srcOperand,byte->type);
+    printf("byte\n");
 }
 
-size_t Handle_SingleOperandCommands(char* command,char* params,void* context)
+
+bool BuildCommandByte(char* commandStr,int destOperand, int srcOperand,CommandByte* byte)
 {
-    return 1;
+    byte->opcode = GetCommandCode(commandStr);
+    byte->destOperand = destOperand;
+    byte->srcOperand = srcOperand;
+    byte->type = eAbsolute;
+
+    return true;
 }
 
-size_t Handle_TwoOperandCommands(char* command, char* params, void* context)
+
+size_t Handle_NoOperandCommand(char* commandStr, char* params,void* context)
 {
-    /*for now*/
-    if(!context)
-    {
-        return 1;
-    }
+    CommandByte commandByte;
     Programme* prog = context;
-    char* param = String_Split(params,COMMA_STR);
-    do
+    
+    /* if a programme is provided to use*/
+    if(prog)
     {
-        if(GetOperandType(param, prog->symbols) != eInvalid)
+        if(BuildCommandByte(commandStr,OPERAND_DEFAULT,OPERAND_DEFAULT,&commandByte))
         {
-            printf("%s\n",param);
+            return 0;
         }
-    }while((param = String_Split(NULL, COMMA_STR)));
+        if(!List_Add(&prog->code.bytes, &commandByte, sizeof(CommandByte)))
+        {
+            Log(eError, "Failed Adding command %s %s to the memory table",commandStr,params);
+            return 0;
+        }
+    }
 
-    return 1;    
+    return 1;
 }
 
+size_t Handle_SingleOperandCommands(char* commandStr,char* param,void* context)
+{
+    CommandByte commandByte;
+    OperandByte operandByte;
+    Programme* prog = context;
+    
+    size_t totalSize = 1;
+    size_t size = 0;
+    if((size = GetOperandSize(param) == 0))
+    {
+        return 0;
+    }
+    totalSize += size;
 
+    /* if the user provided a programme add the data to it*/
+    if(prog)
+    {
+        if(!BuildCommandByte(commandStr,OPERAND_DEFAULT,OPERAND_DEFAULT, &commandByte))
+        {
+            return 0;
+        }
+
+        if(!BuildOperandByte(param, prog, &operandByte))
+        {
+            return 0;
+        }
+        
+        if(!List_Add(&prog->code.bytes, &commandByte, sizeof(CommandByte)) || !List_Add(&prog->code.bytes, &operandByte, sizeof(OperandByte)))
+        {
+            Log(eError, "Failed Adding command %s %s to the memory table",commandStr,param);
+        }
+    }
+
+    return totalSize;
+}
+
+size_t Handle_TwoOperandCommands(char* commandStr, char* params, void* context)
+{
+    char buffer[MAX_LINE_LEN];
+    CommandByte commandByte;
+    OperandByte firstOperandByte,
+                secondOperandByte;
+    Programme* prog = context;
+    char    *firstParam = buffer,
+            *secondParam = NULL;
+    size_t  retSize = 0,
+            totalSize = 1;
+
+    if(!commandStr || !params)
+    {
+        return 0;
+    }
+
+    String_Copy(buffer,params,MAX_LINE_LEN);
+
+    secondParam = String_SplitToTwo(firstParam, COMMA_CH);
+    if(!secondParam)
+    {
+        Log(eError,"recieved a single parameter in a 2 parameter command : %s %s",commandStr,params);
+        return 0;
+    }
+
+    retSize = GetOperandSize(firstParam);
+    if(!retSize)
+    {
+        return 0;
+    }
+    totalSize += retSize;
+
+    retSize = GetOperandSize(secondParam);
+    if(!retSize)
+    {
+        return 0;
+    }
+    totalSize += retSize;
+
+    if(prog)
+    {
+        if(!BuildCommandByte(commandStr,OPERAND_DEFAULT,OPERAND_DEFAULT,&commandByte))
+        {
+            return 0;
+        }
+        if(!BuildOperandByte(firstParam,prog,&firstOperandByte))
+        {
+            return 0;
+        }
+        if(!BuildOperandByte(secondParam,prog,&secondOperandByte))
+        {
+            return 0;
+        }
+        if( !List_Add(&prog->code.bytes, &commandByte, sizeof(CommandByte)) || 
+            !List_Add(&prog->code.bytes, &firstOperandByte, sizeof(OperandByte)) ||
+            !List_Add(&prog->code.bytes, &secondOperandByte, sizeof(OperandByte)))
+        {
+            Log(eError, "Failed Adding command %s %s to the memory table",commandStr,params);
+        }
+        
+    }
+
+    return totalSize;    
+}
 
 
 

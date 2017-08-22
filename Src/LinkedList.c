@@ -43,12 +43,11 @@ bool LinkedList_Add(LinkedList* list,const void* data, size_t length)
 {
     LinkedList* ptr = NULL;
     
-    if(!data || length == 0)
+    
+    if(!list || !data || length == 0)
     {
         return false;
     }
-
-    
     /* if theres no son*/
     if(!list->next)
     {
@@ -77,7 +76,7 @@ bool LinkedList_Add(LinkedList* list,const void* data, size_t length)
                 Log(eError, MEMORY_ERR);
                 return false;
             }
-
+            
             /* allocate space for data*/
             ptr->data = Memory_Allocate(length);
             if(!ptr->data)
@@ -86,18 +85,17 @@ bool LinkedList_Add(LinkedList* list,const void* data, size_t length)
                 Memory_Delete(ptr);
                 return false;
             }
-
             /* set new node with data*/
             Memory_Copy(ptr->data, data, length);
             ptr->length = length;
             ptr->next = NULL;
-    
+            
             list->next = ptr;
-
+            
             return true;
         }
     }
-
+    
     /* in case theres a child tell him to add the data*/
     return LinkedList_Add(list->next, data, length);
 }
@@ -140,7 +138,7 @@ size_t LinkedList_FindData(LinkedList list, void* o_data, Finder finder,void* co
         o_data = NULL;
         return 0;
     }
-    
+
     /* return my child result*/
     return LinkedList_FindData(*list.next, o_data, finder,context);
 }

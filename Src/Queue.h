@@ -23,4 +23,6 @@ size_t Queue_Peek(Queue queue,void* o_data);
 
 void Queue_ForEach(Queue queue,Iterator iter,void* context);
 
+void Queue_Delete(Queue* queue,Cleaner cleaner,void* context);
+
 #endif

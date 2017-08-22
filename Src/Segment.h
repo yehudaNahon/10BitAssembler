@@ -13,7 +13,7 @@ typedef struct Segment
 
 Segment Segment_Init();
 
-
+void Segment_Delete(Segment* seg);
 
 
 

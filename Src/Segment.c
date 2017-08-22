@@ -10,7 +10,10 @@ Segment Segment_Init()
     return type;
 }
 
-
+void Segment_Delete(Segment* seg)
+{
+    List_Delete(&seg->bytes,NULL,NULL);
+}
 
 
 

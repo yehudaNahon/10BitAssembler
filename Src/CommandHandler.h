@@ -11,4 +11,6 @@ size_t CommandHandler_GetLineSize(char* command, char* params);
 
 size_t CommandHandler_Handle(char* command,char* params, Programme* prog);
 
+void PrintCommandByteIter(const void* data,size_t len, void* context);
+
 #endif

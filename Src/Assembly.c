@@ -14,6 +14,13 @@ Programme Programme_Init()
     return prog;
 }
 
+void Programme_Delete(Programme* prog)
+{
+    Segment_Delete(&prog->data);
+    Segment_Delete(&prog->code);
+    List_Delete(&prog->symbols,NULL,NULL);
+}
+
 Assembly Assembly_Init(char* fileName)
 {
     Assembly assembly;
@@ -29,5 +36,9 @@ Assembly Assembly_Init(char* fileName)
     return assembly;
 }
 
-
+void Assembly_Delete(Assembly* as)
+{
+    Programme_Delete(&as->prog);
+    Queue_Delete(&as->penndingCommands,NULL,NULL);
+}
 
