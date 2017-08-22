@@ -6,6 +6,9 @@
 #include "Segment.h"
 #include "List.h"
 
+#define NUM_OF_REGS (8)
+
+
 typedef struct Programme
 {
     Segment data;
@@ -26,7 +29,6 @@ typedef struct Assembly
 Assembly Assembly_Init(char* fileName);
 
 Programme Programme_Init(); 
-
 
 
 #endif

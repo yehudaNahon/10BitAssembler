@@ -23,9 +23,10 @@ bool IsLabel(char* param,List* symbols)
     return List_FindData(*symbols, ptr, &Symbol_Finder, param) != 0;
 }
 
+#define REG_CH ('r')
 bool IsRegAccess(char* param)
 {
-    return false;
+    return param[0] == REG_CH && Convert_StrToDecimal(&param[1]) < NUM_OF_REGS;
 }
 
 bool IsMatAccess(char* param)
@@ -80,7 +81,7 @@ size_t Handle_mov(char* params, void* context)
             printf("%s\n",param);
         }
     }while((param = String_Split(NULL, COMMA_STR)));
-    
+
     return 1;    
 }
 
