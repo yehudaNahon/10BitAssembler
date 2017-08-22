@@ -1,85 +1,145 @@
-
+#include "Convert.h"
 #include "CommandHandler.h"
 #include "CommandHandlerInternals.h"
 #include "String.h"
+#include <stdio.h>
 
 
-size_t Handle_mov(char* command, void* context)
+
+void Operand_SetValue(OperandByte* op, int value)
 {
+    op->value = value;
+}
+
+#define DIRECT_CH ('#')
+bool IsImmediate(char* param)
+{
+    return param[0] == DIRECT_CH;
+}
+
+bool IsLabel(char* param,SymbolTable* table)
+{
+    return false;
+}
+
+bool IsRegAccess(char* param)
+{
+    return false;
+}
+
+bool IsMatAccess(char* param)
+{
+    return false;
+}
+
+/* return number of operands used*/
+int GetParamValue(char* param,OperandByte op[],size_t len, Programme* prog)
+{
+    if(!op || len == 0 || !param || !prog)
+    {
+        return false;
+    }
+}
+
+EAddressingType GetOperandType(char* param, SymbolTable* table)
+{
+    if(IsImmediate(param))
+    {
+        return eImmediate;
+    }
+    else if(IsMatAccess(param))
+    {
+        return eMetAccess;   
+    }
+    else if(IsRegAccess(param))
+    {
+        return eDirectRegister;
+    }
+    else if(IsLabel(param, table))
+    {
+        return eDirect;   
+    }
+
+    return eInvalid;
+}
+
+size_t Handle_mov(char* params, void* context)
+{
+    printf("%s\n",params);
     return 1;    
 }
 
-size_t Handle_cmp(char* command, void* context)
+size_t Handle_cmp(char* params, void* context)
 {
     return 1;        
 }
 
-size_t Handle_add(char* command, void* context)
+size_t Handle_add(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_sub(char* command, void* context)
+size_t Handle_sub(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_not(char* command, void* context)
+size_t Handle_not(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_clr(char* command, void* context)
+size_t Handle_clr(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_lea(char* command, void* context)
+size_t Handle_lea(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_inc(char* command, void* context)
+size_t Handle_inc(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_dec(char* command, void* context)
+size_t Handle_dec(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_jmp(char* command, void* context)
+size_t Handle_jmp(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_bne(char* command, void* context)
+size_t Handle_bne(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_red(char* command, void* context)
+size_t Handle_red(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_prn(char* command, void* context)
+size_t Handle_prn(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_jsr(char* command, void* context)
+size_t Handle_jsr(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_rts(char* command, void* context)
+size_t Handle_rts(char* params, void* context)
 {
     return 1;
 }
 
-size_t Handle_stop(char* command, void* context)
+size_t Handle_stop(char* params, void* context)
 {
     return 1;
 }

@@ -66,14 +66,14 @@ bool Assembler_IsCodeLine(char* line)
 
 void Assembler_CreateSymbols(const void* data, size_t len, void* context)
 {
-    Assembly* prog = context;
+    Assembly* assembly = context;
     char line[MAX_LINE_LEN];
     char* command = line;
     char* params = NULL;
     char* label = NULL;
     Symbol symbol;
     
-    if(!prog || !data)
+    if(!assembly || !data)
     {
         return;
     }
@@ -106,26 +106,26 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     {
         if(label)
         {
-            symbol = Symbol_Init(label,prog->data.counter + 1);
-            SymbolTable_Add(&prog->symbol, symbol);
+            symbol = Symbol_Init(label,assembly->prog.data.counter + 1);
+            SymbolTable_Add(&assembly->prog.symbol, symbol);
         }
-        prog->data.counter += DataHandler_Handle(command,params, &prog->data.memory);
+        assembly->prog.data.counter += DataHandler_Handle(command,params, &assembly->prog.data.memory);
     }
     else if(CommandHandler_IsLine(command))
     {
         if(label)
         {
-            symbol = Symbol_Init(label,prog->command.counter + 1);
-            SymbolTable_Add(&prog->symbol, symbol);    
+            symbol = Symbol_Init(label,assembly->prog.code.counter + 1);
+            SymbolTable_Add(&assembly->prog.symbol, symbol);    
         }
-        prog->command.counter += CommandHandler_GetLineSize(command);
+        assembly->prog.code.counter += CommandHandler_GetLineSize(command);
         
         if(params)
         {
             *(params - 1) = SPACE_CH;
         }
         /* add the pennding queue*/
-        Queue_enqueue(&prog->penndingCommands, command, String_Len(command) + 1);
+        Queue_enqueue(&assembly->penndingCommands, command, String_Len(command) + 1);
     }
 }
 
@@ -151,8 +151,7 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     /*should always be true*/
     if(CommandHandler_IsLine(command))
     {
-        printf("%s %s\n",command,params);
-        CommandHandler_Handle(command,params, &prog->command.memory);
+        CommandHandler_Handle(command,params, &prog->prog);
     }
 }
 
@@ -193,10 +192,10 @@ bool Assembler_AssembleFile(char* asmFile)
     Queue_ForEach(assembly.penndingCommands,&PrintLine,NULL);
 
     printf("******** DATA MEMORY **************\n");
-    ByteTable_ForEach(assembly.data.memory, &PrintByte, NULL);
+    ByteTable_ForEach(assembly.prog.data.memory, &PrintByte, NULL);
 
     printf("*********** SYMBOLS************\n");
-    SymbolTable_ForEach(assembly.symbol, &PrintSymbol, NULL);
+    SymbolTable_ForEach(assembly.prog.symbol, &PrintSymbol, NULL);
     
     printf("\n");
     Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly);

@@ -12,21 +12,6 @@ typedef struct Byte
 }Byte;
 
 
-typedef enum EEncodingType
-{
-    eAbsolute,
-    eExternal,
-    eRelocatable
-}EEncodingType;
-
-typedef enum EAddressingType
-{
-    eImmediate,
-    eDirect,
-    eMetAccess,
-    eDirectRegister
-}EAddressingType;
-
 
 
 

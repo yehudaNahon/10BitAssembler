@@ -34,6 +34,9 @@ void Symbol_ChangeType(Symbol* symbol,ESymbolType type);
 void Symbol_Delete(Symbol* symbol);
 
 
+bool FindSymbolIter(void* symbolPtr, size_t index, void* name);
+
+
 
 
 #endif

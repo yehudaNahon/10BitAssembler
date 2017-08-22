@@ -1,3 +1,6 @@
+#ifndef ASSEMBLY_H
+#define ASSEMBLY_H
+
 #include "OSDefines.h"
 #include "Queue.h"
 #include "Segment.h"
@@ -25,3 +28,4 @@ Programme Programme_Init();
 
 
 
+#endif

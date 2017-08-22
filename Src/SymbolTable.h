@@ -82,4 +82,11 @@ Symbol* SymbolTable_GetElement(SymbolTable table, size_t index);
 bool SymbolTable_Remove(SymbolTable* table, size_t index);
 
 
+
+
+
+
+
+
+
 #endif
