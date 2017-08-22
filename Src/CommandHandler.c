@@ -71,6 +71,16 @@ EAddressingType GetOperandType(char* param, List* symbols)
 
 size_t Handle_mov(char* params, void* context)
 {
+    Programme* prog = context;
+    char* param = String_Split(params,COMMA_STR);
+    do
+    {
+        if(GetOperandType(param, &prog->symbols) != eInvalid)
+        {
+            printf("%s\n",param);
+        }
+    }while((param = String_Split(NULL, COMMA_STR)));
+    
     return 1;    
 }
 
@@ -81,15 +91,6 @@ size_t Handle_cmp(char* params, void* context)
 
 size_t Handle_add(char* params, void* context)
 {
-    Programme* prog = context;
-    char* param = String_Split(params,COMMA_STR);
-    do
-    {
-        if(GetOperandType(param, &prog->symbols) != eInvalid)
-        {
-            printf("%s\n",param);
-        }
-    }while((param = String_Split(NULL, COMMA_STR)));
     return 1;
 }
 
