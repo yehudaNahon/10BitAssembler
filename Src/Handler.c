@@ -25,7 +25,7 @@ size_t Handler_Handle(char* command,char* params, void* context, Handler handler
         /*return true only if the strings are the same from the start*/
         if(String_Compare(command, handlers[i].command, String_Len(handlers[i].command)) == 0)
         {
-            return handlers[i].act(params, context);
+            return handlers[i].act(command, params, context);
         }
     } 
     return 0;

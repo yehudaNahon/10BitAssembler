@@ -26,7 +26,7 @@ void DataHandler_AddToList(int value, List* bytes)
 }
 
 
-size_t DataHandler_StringHandler(char* params, void* list)
+size_t DataHandler_StringHandler(char* command, char* params, void* list)
 {
     char* ptr = NULL;
     size_t size = 0;
@@ -76,7 +76,7 @@ size_t DataHandler_CalculateMatSize(char* mat)
 }
 
 
-size_t DataHandler_MatHandler(char* params, void* list)
+size_t DataHandler_MatHandler(char* command, char* params, void* list)
 {
     char* matSize = params;
     char* matVals = NULL;
@@ -127,7 +127,7 @@ size_t DataHandler_MatHandler(char* params, void* list)
 }
 
 
-size_t DataHandler_DataHandler(char* params, void* list)
+size_t DataHandler_DataHandler(char* command, char* params, void* list)
 {
     size_t size = 0;
     char* valueStr = NULL;

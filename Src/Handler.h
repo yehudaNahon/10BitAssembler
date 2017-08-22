@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 
-typedef size_t (*Action) (char*,void*);
+typedef size_t (*Action) (char*,char*,void*);
 
 typedef struct Handler
 {

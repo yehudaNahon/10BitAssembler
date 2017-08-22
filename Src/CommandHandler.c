@@ -5,7 +5,29 @@
 #include "Log.h"
 #include <stdio.h>
 
+size_t Handle_NoOperandCommand(char* command, char* params,void* context);
+size_t Handle_SingleOperandCommands(char* command,char* params,void* context);
+size_t Handle_TwoOperandCommands(char* command, char* params, void* context);
 
+#define COMMAND_NUM_OF_ELEM (16)
+Handler commandHandlers[COMMAND_NUM_OF_ELEM] = {
+    {"mov",&Handle_TwoOperandCommands},
+    {"cmp",&Handle_TwoOperandCommands},
+    {"add",&Handle_TwoOperandCommands},
+    {"sub",&Handle_TwoOperandCommands},
+    {"not",&Handle_SingleOperandCommands},
+    {"clr",&Handle_SingleOperandCommands},
+    {"lea",&Handle_TwoOperandCommands},
+    {"inc",&Handle_SingleOperandCommands},
+    {"dec",&Handle_SingleOperandCommands},
+    {"jmp",&Handle_SingleOperandCommands},
+    {"bne",&Handle_SingleOperandCommands},
+    {"red",&Handle_SingleOperandCommands},
+    {"prn",&Handle_SingleOperandCommands},
+    {"jsr",&Handle_SingleOperandCommands},
+    {"rts",&Handle_NoOperandCommand},
+    {"stop",&Handle_NoOperandCommand}
+};
 
 void Operand_SetValue(OperandByte* op, int value)
 {
@@ -111,8 +133,37 @@ EAddressingType GetOperandType(char* param, List symbols)
     return eInvalid;
 }
 
-size_t Handle_mov(char* params, void* context)
+
+int GetCommandCode(char* command)
 {
+    int i=0;
+    for(i=0; i< COMMAND_NUM_OF_ELEM; i++)
+    {
+        if(String_Compare(commandHandlers[i].command,command,String_Len(commandHandlers[i].command)) == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+size_t Handle_NoOperandCommand(char* command, char* params,void* context)
+{
+    return 1;
+}
+
+size_t Handle_SingleOperandCommands(char* command,char* params,void* context)
+{
+    return 1;
+}
+
+size_t Handle_TwoOperandCommands(char* command, char* params, void* context)
+{
+    /*for now*/
+    if(!context)
+    {
+        return 1;
+    }
     Programme* prog = context;
     char* param = String_Split(params,COMMA_STR);
     do
@@ -126,119 +177,7 @@ size_t Handle_mov(char* params, void* context)
     return 1;    
 }
 
-size_t Handle_cmp(char* params, void* context)
-{
-    return 1;        
-}
 
-size_t Handle_add(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_sub(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_not(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_clr(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_lea(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_inc(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_dec(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_jmp(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_bne(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_red(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_prn(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_jsr(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_rts(char* params, void* context)
-{
-    return 1;
-}
-
-size_t Handle_stop(char* params, void* context)
-{
-    return 1;
-}
-
-#define COMMAND_NUM_OF_ELEM (16)
-Handler commandHandlers[COMMAND_NUM_OF_ELEM] = {
-    {"mov",&Handle_mov},
-    {"cmp",&Handle_cmp},
-    {"add",&Handle_add},
-    {"sub",&Handle_sub},
-    {"not",&Handle_not},
-    {"clr",&Handle_clr},
-    {"lea",&Handle_lea},
-    {"inc",&Handle_inc},
-    {"dec",&Handle_dec},
-    {"jmp",&Handle_jmp},
-    {"bne",&Handle_bne},
-    {"red",&Handle_red},
-    {"prn",&Handle_prn},
-    {"jsr",&Handle_jsr},
-    {"rts",&Handle_rts},
-    {"stop",&Handle_stop}
-};
-
-CommandType commandTypes[COMMAND_NUM_OF_ELEM] = {
-    {"mov",eTwoOperands},
-    {"cmp",eTwoOperands},
-    {"add",eTwoOperands},
-    {"sub",eTwoOperands},
-    {"not",eSingleOperand},
-    {"clr",eSingleOperand},
-    {"lea",eTwoOperands},
-    {"inc",eSingleOperand},
-    {"dec",eSingleOperand},
-    {"jmp",eSingleOperand},
-    {"bne",eSingleOperand},
-    {"red",eSingleOperand},
-    {"prn",eSingleOperand},
-    {"jsr",eSingleOperand},
-    {"rts",eNoOperand},
-    {"stop",eNoOperand}
-};
 
 
 
@@ -253,19 +192,9 @@ size_t CommandHandler_Handle(char* command, char* params, Programme* prog)
     return Handler_Handle(command, params, prog, commandHandlers, COMMAND_NUM_OF_ELEM);
 }
 
-size_t CommandHandler_GetLineSize(char* command)
+size_t CommandHandler_GetLineSize(char* command, char* params)
 {
-    int i=0;
-    
-        for(i=0;i< COMMAND_NUM_OF_ELEM ; i++)
-        {        
-            /*return true only if the strings are the same from the start*/
-            if(String_Compare(command, commandTypes[i].command, String_Len(commandTypes[i].command)) == 0)
-            {
-                return (size_t)commandTypes[i].type;
-            }
-        } 
-        return 0;
+    return Handler_Handle(command, params, NULL, commandHandlers, COMMAND_NUM_OF_ELEM);
 }
 
 

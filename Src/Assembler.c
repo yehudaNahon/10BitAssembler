@@ -18,7 +18,6 @@
 #define LABEL_INDICATOR (':')
 #define LIGAL_LABEL_CH LETTERS_CH UPPER_CASE_CH NUMBERS_CH
 
-#define MAX_LINE_LEN (800)
 #define COMMENT_CH (';')
 
 
@@ -118,7 +117,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
             symbol = Symbol_Init(label,assembly->prog.code.counter + 1);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));    
         }
-        assembly->prog.code.counter += CommandHandler_GetLineSize(command);
+        assembly->prog.code.counter += CommandHandler_GetLineSize(command, params);
         
         if(params)
         {

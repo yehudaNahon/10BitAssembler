@@ -7,7 +7,7 @@
 
 bool CommandHandler_IsLine(char* command);
 
-size_t CommandHandler_GetLineSize(char* command);
+size_t CommandHandler_GetLineSize(char* command, char* params);
 
 size_t CommandHandler_Handle(char* command,char* params, Programme* prog);
 
