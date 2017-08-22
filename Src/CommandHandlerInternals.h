@@ -61,7 +61,7 @@ typedef struct OperandByte
 
 typedef struct Operand
 {
-    EOperandType type;
+    EAddressingType type;
     size_t len;
     OperandByte bytes[MAX_NUM_OF_ARGS];
 }Operand;

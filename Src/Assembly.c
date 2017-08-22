@@ -9,7 +9,7 @@ Programme Programme_Init()
     
     prog.data = Segment_Init();
     prog.code = Segment_Init();
-    prog.symbol = SymbolTable_Init();
+    prog.symbols = List_Init();
     
     return prog;
 }

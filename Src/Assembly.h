@@ -4,12 +4,13 @@
 #include "OSDefines.h"
 #include "Queue.h"
 #include "Segment.h"
+#include "List.h"
 
 typedef struct Programme
 {
     Segment data;
     Segment code;
-    SymbolTable symbol;
+    List symbols;
 }Programme;
 
 typedef struct Assembly
