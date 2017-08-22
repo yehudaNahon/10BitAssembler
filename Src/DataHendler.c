@@ -9,23 +9,23 @@
 #define STR_CLOSE ('"')
 
 
-void DataHandler_AddToTable(int value, ByteTable* table)
+void DataHandler_AddToList(int value, List* bytes)
 {
     Byte byte;
     int i=0;
 
-    if(!table)
+    if(!bytes)
     {
         Log(eError, PARAM_ERR);
         return;
     }
 
     byte.value = value;
-    ByteTable_Add(table,byte);
+    List_Add(bytes,&byte, sizeof(Byte));
 }
 
 
-size_t DataHandler_StringHandler(char* params, void* table)
+size_t DataHandler_StringHandler(char* params, void* list)
 {
     char* ptr = NULL;
     size_t size = 0;
@@ -39,12 +39,12 @@ size_t DataHandler_StringHandler(char* params, void* table)
 
     for(ptr = &params[1], size = 0; *ptr != STR_CLOSE ; ptr++, size++)
     {
-        /*add the string to the table*/
-        DataHandler_AddToTable(*ptr, table);
+        /*add the string to the list*/
+        DataHandler_AddToList(*ptr, list);
     }
     
-    /*add null char to the table*/
-    DataHandler_AddToTable(0, table);
+    /*add null char to the list*/
+    DataHandler_AddToList(0, list);
         
     return size;
 }
@@ -78,7 +78,7 @@ size_t DataHandler_CalculateMatSize(char* mat)
 
 
 #define COMMA_STR (",")
-size_t DataHandler_MatHandler(char* params, void* table)
+size_t DataHandler_MatHandler(char* params, void* list)
 {
     char* matSize = params;
     char* matVals = NULL;
@@ -87,7 +87,7 @@ size_t DataHandler_MatHandler(char* params, void* table)
     int value = 0;
     int added=0;
 
-    if(!params || !table)
+    if(!params || !list)
     {
         Log(eError, PARAM_ERR);
         return 0;
@@ -113,7 +113,7 @@ size_t DataHandler_MatHandler(char* params, void* table)
                 return size;
             }
             value = Convert_StrToDecimal(valueStr);
-            DataHandler_AddToTable(value,table);
+            DataHandler_AddToList(value,list);
             added++;
             
         }while((valueStr = String_Split(NULL,COMMA_STR)));
@@ -121,7 +121,7 @@ size_t DataHandler_MatHandler(char* params, void* table)
 
     while(added != size)
     {
-        DataHandler_AddToTable(0,table);
+        DataHandler_AddToList(0,list);
         added++;
     }
 
@@ -129,13 +129,13 @@ size_t DataHandler_MatHandler(char* params, void* table)
 }
 
 
-size_t DataHandler_DataHandler(char* params, void* table)
+size_t DataHandler_DataHandler(char* params, void* list)
 {
     size_t size = 0;
     char* valueStr = NULL;
     int value = 0;
     
-    if(!params || !table)
+    if(!params || !list)
     {
         Log(eError, PARAM_ERR);
         return 0;
@@ -147,7 +147,7 @@ size_t DataHandler_DataHandler(char* params, void* table)
         do
         {
             value = Convert_StrToDecimal(valueStr);
-            DataHandler_AddToTable(value,table);
+            DataHandler_AddToList(value,list);
             size++;
             
         }while((valueStr = String_Split(NULL,COMMA_STR)));
@@ -170,7 +170,7 @@ bool DataHandler_IsLine(char* command)
     return Handler_HasHandler(command, dataHandlers, DATA_NUM_OF_ELEM);
 }
 
-size_t DataHandler_Handle(char* command,char* params, ByteTable* table)
+size_t DataHandler_Handle(char* command,char* params, List* bytes)
 {
-    return Handler_Handle(command, params, table, dataHandlers, DATA_NUM_OF_ELEM);
+    return Handler_Handle(command, params, bytes, dataHandlers, DATA_NUM_OF_ELEM);
 }

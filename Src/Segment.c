@@ -4,7 +4,7 @@
 Segment Segment_Init()
 {
     Segment type;
-    type.memory = ByteTable_Init();
+    type.bytes = List_Init();
     type.counter = 0;
 
     return type;

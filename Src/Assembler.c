@@ -109,7 +109,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
             symbol = Symbol_Init(label,assembly->prog.data.counter + 1);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));
         }
-        assembly->prog.data.counter += DataHandler_Handle(command,params, &assembly->prog.data.memory);
+        assembly->prog.data.counter += DataHandler_Handle(command,params, &assembly->prog.data.bytes);
     }
     else if(CommandHandler_IsLine(command))
     {
@@ -192,7 +192,7 @@ bool Assembler_AssembleFile(char* asmFile)
     Queue_ForEach(assembly.penndingCommands,&PrintLine,NULL);
 
     printf("******** DATA MEMORY **************\n");
-    ByteTable_ForEach(assembly.prog.data.memory, &PrintByte, NULL);
+    List_ForEach(assembly.prog.data.bytes, &PrintByte, NULL);
 
     printf("*********** SYMBOLS************\n");
     List_ForEach(assembly.prog.symbols, &PrintSymbol, NULL);

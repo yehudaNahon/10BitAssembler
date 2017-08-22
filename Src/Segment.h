@@ -3,11 +3,11 @@
 
 #include "SymbolTable.h"
 #include "ByteTable.h"
-
+#include "List.h"
 
 typedef struct Segment
 {
-    ByteTable memory;
+    List bytes;
     size_t counter;
 }Segment;
 
