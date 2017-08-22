@@ -2,6 +2,7 @@
 #include "CommandHandler.h"
 #include "CommandHandlerInternals.h"
 #include "String.h"
+#include "Log.h"
 #include <stdio.h>
 
 
@@ -17,10 +18,10 @@ bool IsImmediate(char* param)
     return param[0] == DIRECT_CH;
 }
 
-bool IsLabel(char* param,List* symbols)
+bool IsLabel(char* param,List symbols)
 {
     void* ptr = NULL;
-    return List_FindData(*symbols, ptr, &Symbol_Finder, param) != 0;
+    return List_FindData(symbols, ptr, &Symbol_Finder, param) != 0;
 }
 
 #define REG_CH ('r')
@@ -29,9 +30,49 @@ bool IsRegAccess(char* param)
     return param[0] == REG_CH && Convert_StrToDecimal(&param[1]) < NUM_OF_REGS;
 }
 
-bool IsMatAccess(char* param)
+bool IsMatAccess(char* param,List symbols)
 {
-    return false;
+    char buffer[MAX_LINE_LEN];
+    char* ptr = NULL;
+    char* mat = NULL;
+
+    /* validaty check*/
+    if(!param)
+    {
+        return false;
+    }
+
+    String_Copy(buffer, param, MAX_LINE_LEN);
+
+    
+    /* locate the mat []*/
+    mat = String_SplitToTwo(buffer, MAT_OPEN);
+    if(!mat)
+    {
+        return false;
+    }
+    
+    /*check the place is a valid label*/
+    if(!IsLabel(buffer,symbols))
+    {
+        return false;
+    }
+    
+    /* check all mat params are valid registers*/
+    ptr = String_Split(mat, MAT_CLOSE);
+    do
+    {
+        if(ptr[0] == MAT_OPEN)
+        {
+            ptr++;
+        }
+        if(!IsRegAccess(ptr))
+        {
+            return false;
+        }
+    }while((ptr = String_Split(NULL, MAT_CLOSE)));
+    
+    return true;
 }
 
 /* return number of operands used*/
@@ -43,9 +84,9 @@ int GetParamValue(char* param,OperandByte op[],size_t len, Programme* prog)
     }
 }
 
-EAddressingType GetOperandType(char* param, List* symbols)
+EAddressingType GetOperandType(char* param, List symbols)
 {
-    if(!param || !symbols)
+    if(!param)
     {
         return eInvalid;
     }
@@ -54,7 +95,7 @@ EAddressingType GetOperandType(char* param, List* symbols)
     {
         return eImmediate;
     }
-    else if(IsMatAccess(param))
+    else if(IsMatAccess(param,symbols))
     {
         return eMetAccess;   
     }
@@ -76,7 +117,7 @@ size_t Handle_mov(char* params, void* context)
     char* param = String_Split(params,COMMA_STR);
     do
     {
-        if(GetOperandType(param, &prog->symbols) != eInvalid)
+        if(GetOperandType(param, prog->symbols) != eInvalid)
         {
             printf("%s\n",param);
         }

@@ -4,6 +4,7 @@
 #include "String.h"
 #include "Memory.h"
 #include "Convert.h"
+#include "Assembly.h"
 
 #define STR_OPEN ('"')
 #define STR_CLOSE ('"')
@@ -50,8 +51,6 @@ size_t DataHandler_StringHandler(char* params, void* list)
 }
 
 
-#define MAT_OPEN ('[')
-#define MAT_CLOSE ("]")
 size_t DataHandler_CalculateMatSize(char* mat)
 {
     char* numberStr = NULL;
@@ -77,7 +76,6 @@ size_t DataHandler_CalculateMatSize(char* mat)
 }
 
 
-#define COMMA_STR (",")
 size_t DataHandler_MatHandler(char* params, void* list)
 {
     char* matSize = params;

@@ -6,8 +6,12 @@
 #include "Segment.h"
 #include "List.h"
 
+#define MAX_LINE_LEN (80)
 #define NUM_OF_REGS (8)
+#define MAT_OPEN ('[')
+#define MAT_CLOSE ("]")
 
+#define COMMA_STR (",")
 
 typedef struct Programme
 {
@@ -29,6 +33,5 @@ typedef struct Assembly
 Assembly Assembly_Init(char* fileName);
 
 Programme Programme_Init(); 
-
 
 #endif
