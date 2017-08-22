@@ -8,7 +8,7 @@
 #define UPPER_CASE_CH "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define NUMBERS_CH "1234567890"
 #define SPACE_CH (' ')
-
+#define COMMA_STR (",")
 
 int String_Len(const char* str);
 

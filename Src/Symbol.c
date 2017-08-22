@@ -47,10 +47,10 @@ void Symbol_Delete(Symbol* symbol)
     Symbol_Clean(symbol);   
 }
 
-bool FindSymbolIter(void* symbolPtr, size_t index, void* name)
+bool Symbol_Finder(void* symbolPtr, size_t index, void* name)
 {
     Symbol* symbol = symbolPtr;
-
+    
     if(String_Compare(symbol->name,name,MAX_SYMBOL_NAME_LEN) == 0)
     {
         return true;

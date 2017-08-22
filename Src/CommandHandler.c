@@ -17,9 +17,10 @@ bool IsImmediate(char* param)
     return param[0] == DIRECT_CH;
 }
 
-bool IsLabel(char* param,SymbolTable* table)
+bool IsLabel(char* param,List* symbols)
 {
-    return false;
+    void* ptr = NULL;
+    return List_FindData(*symbols, ptr, &Symbol_Finder, param) != 0;
 }
 
 bool IsRegAccess(char* param)
@@ -41,8 +42,13 @@ int GetParamValue(char* param,OperandByte op[],size_t len, Programme* prog)
     }
 }
 
-EAddressingType GetOperandType(char* param, SymbolTable* table)
+EAddressingType GetOperandType(char* param, List* symbols)
 {
+    if(!param || !symbols)
+    {
+        return eInvalid;
+    }
+
     if(IsImmediate(param))
     {
         return eImmediate;
@@ -55,7 +61,7 @@ EAddressingType GetOperandType(char* param, SymbolTable* table)
     {
         return eDirectRegister;
     }
-    else if(IsLabel(param, table))
+    else if(IsLabel(param, symbols))
     {
         return eDirect;   
     }
@@ -65,7 +71,6 @@ EAddressingType GetOperandType(char* param, SymbolTable* table)
 
 size_t Handle_mov(char* params, void* context)
 {
-    printf("%s\n",params);
     return 1;    
 }
 
@@ -76,6 +81,15 @@ size_t Handle_cmp(char* params, void* context)
 
 size_t Handle_add(char* params, void* context)
 {
+    Programme* prog = context;
+    char* param = String_Split(params,COMMA_STR);
+    do
+    {
+        if(GetOperandType(param, &prog->symbols) != eInvalid)
+        {
+            printf("%s\n",param);
+        }
+    }while((param = String_Split(NULL, COMMA_STR)));
     return 1;
 }
 

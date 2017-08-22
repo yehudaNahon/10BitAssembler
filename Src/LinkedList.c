@@ -127,7 +127,7 @@ size_t LinkedList_FindData(LinkedList list, void* o_data, Finder finder,void* co
     {
         return 0;
     }
-
+    
     /* check if the data in me is the correct data*/
     if(finder && finder(list.data, list.length,context))
     {
@@ -135,6 +135,12 @@ size_t LinkedList_FindData(LinkedList list, void* o_data, Finder finder,void* co
         return list.length;
     }
 
+    if(!list.next)
+    {
+        o_data = NULL;
+        return 0;
+    }
+    
     /* return my child result*/
     return LinkedList_FindData(*list.next, o_data, finder,context);
 }
