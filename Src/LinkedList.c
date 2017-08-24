@@ -118,7 +118,7 @@ size_t LinkedList_Len(LinkedList list)
     return LinkedList_Len(*list.next) + 1;
 }
 
-size_t LinkedList_FindData(LinkedList list, void* o_data, Finder finder,void* context)
+size_t LinkedList_FindData(LinkedList list, void** o_data, Finder finder,void* context)
 {
     /* validaty check */
     if(!finder || !list.data || list.length == 0)
@@ -129,10 +129,10 @@ size_t LinkedList_FindData(LinkedList list, void* o_data, Finder finder,void* co
     /* check if the data in me is the correct data*/
     if(finder && finder(list.data, list.length,context))
     {
-        o_data = list.data;
+        *o_data = list.data;
         return list.length;
     }
-
+    
     if(!list.next)
     {
         o_data = NULL;
@@ -140,7 +140,7 @@ size_t LinkedList_FindData(LinkedList list, void* o_data, Finder finder,void* co
     }
 
     /* return my child result*/
-    return LinkedList_FindData(*list.next, o_data, finder,context);
+    return LinkedList_FindData(*list.next, o_data, finder,context);;
 }
 
 

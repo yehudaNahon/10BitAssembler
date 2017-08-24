@@ -41,55 +41,7 @@ void Operand_SetValue(OperandByte* op, int value)
 }
 
 
-int GetLabel(char* param,List symbols, Symbol* o_ptr)
-{
-    return List_FindData(symbols, o_ptr, &Symbol_Finder, param);
-}
 
-
-int GetMatAccess(char* param, List symbols)
-{
-    char buffer[MAX_LINE_LEN];
-    char* ptr = NULL;
-    char* mat = NULL;
-
-    /* validaty check*/
-    if(!param)
-    {
-        return false;
-    }
-
-    String_Copy(buffer, param, MAX_LINE_LEN);
-
-    /* locate the mat []*/
-    mat = String_SplitToTwo(buffer, MAT_OPEN);
-    if(!mat)
-    {
-        return false;
-    }
-    
-    /*check the place is a valid label*/
-    if(!IsLabel(buffer))
-    {
-        return false;
-    }
-    
-    /* check all mat params are valid registers*/
-    ptr = String_Split(mat, MAT_CLOSE);
-    do
-    {
-        if(ptr[0] == MAT_OPEN)
-        {
-            ptr++;
-        }
-        if(!IsRegAccess(ptr))
-        {
-            return false;
-        }
-    }while((ptr = String_Split(NULL, MAT_CLOSE)));
-    
-    return true;
-}
 
 int GetCommandCode(char* command)
 {

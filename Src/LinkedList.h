@@ -23,7 +23,7 @@ size_t LinkedList_Len(LinkedList list);
 
 size_t LinkedList_Remove(LinkedList* list,void* o_data, Finder finder,void* context);
 
-size_t LinkedList_FindData(LinkedList list, void* o_data,Finder finder,void* context);
+size_t LinkedList_FindData(LinkedList list, void** o_data,Finder finder,void* context);
 
 void LinkedList_ForEach(LinkedList list,Iterator iter, void* context);
 

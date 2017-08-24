@@ -201,7 +201,7 @@ bool Assembler_AssembleFile(char* asmFile)
     
     printf("********** CODE **************\n");
     /*printf("%lu %p\n",List_Len(assembly.prog.code.bytes),&prog->code.bytes);*/
-    List_ForEach(assembly.prog.code.bytes,&PrintCommandByteIter,NULL);
+    /*List_ForEach(assembly.prog.code.bytes,&PrintCommandByteIter,NULL);*/
     
     /*close the file*/
     if(!File_Close(file))

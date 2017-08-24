@@ -30,9 +30,9 @@ size_t List_Remove(List* list,void* o_ptr, Finder finder,void* context)
     return LinkedList_Remove(list,o_ptr,finder,context);
 }
 
-size_t List_FindData(List list, void* o_ptr,Finder finder,void* context)
+size_t List_FindData(List list, void** o_ptr,Finder finder,void* context)
 {
-    return LinkedList_FindData(list, o_ptr, finder, context);
+    return LinkedList_FindData(list, o_ptr, finder, context);    
 }
 
 void List_ForEach(List list,Iterator iter, void* context)

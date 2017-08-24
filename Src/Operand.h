@@ -8,6 +8,7 @@
 
 #define OPERAND_DEFAULT (0)
 
+
 typedef enum EOperandType
 {
     eImmediate,

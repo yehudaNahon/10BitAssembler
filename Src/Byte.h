@@ -20,5 +20,3 @@ typedef struct Byte
 
 
 
-
-
