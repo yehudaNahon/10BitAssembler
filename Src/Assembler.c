@@ -67,8 +67,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
 {
     Assembly* assembly = context;
     char line[MAX_LINE_LEN];
-    char* command = line;
-    char* params = NULL;
+    char* commandLine = line;
     char* label = NULL;
     Symbol symbol;
     
@@ -88,43 +87,42 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     {
         return;
     }
+
     
     if(Assembly_HasLabel(line))
     {
-        command = String_SplitToTwo(line, LABEL_INDICATOR);
+        commandLine = String_SplitToTwo(line, LABEL_INDICATOR);
         label = line;
-        String_SimplfyLine(command);
+        printf("before : %s\n",commandLine);
+        String_SimplfyLine(commandLine);
+        printf("after : %s\n",commandLine);
         String_SimplfyLine(label);
     }
     
-    params = String_SplitToTwo(command, SPACE_CH);
+    /*printf("%s : %s - %s\n",label,commandLine,params);*/
     
-    /*printf("%s : %s - %s\n",label,command,params);*/
-
-    if(DataHandler_IsLine(command))
+    if(DataHandler.IsHandler(commandLine))
     {
         if(label)
         {
             symbol = Symbol_Init(label,assembly->prog.data.counter + 1);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));
         }
-        assembly->prog.data.counter += DataHandler_Handle(command,params, &assembly->prog.data.bytes);
+        
+        assembly->prog.data.counter += DataHandler.GetSize(commandLine);
+        DataHandler.Add(commandLine,&assembly->prog.data.bytes,assembly->prog.symbols);
     }
-    else if(CommandHandler_IsLine(command))
+    else if(CommandHandler.IsHandler(commandLine))
     {
         if(label)
         {
             symbol = Symbol_Init(label,assembly->prog.code.counter + 1);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));    
         }
-        assembly->prog.code.counter += CommandHandler_GetLineSize(command, params);
+        assembly->prog.code.counter += CommandHandler.GetSize(commandLine);
         
-        if(params)
-        {
-            *(params - 1) = SPACE_CH;
-        }
         /* add the pennding queue*/
-        Queue_enqueue(&assembly->penndingCommands, command, String_Len(command) + 1);
+        Queue_enqueue(&assembly->penndingCommands, commandLine, String_Len(commandLine) + 1);
     }
 }
 
@@ -132,10 +130,10 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
 {
     Programme* prog = context;
     char line[MAX_LINE_LEN];
-    char* command = line;
+    char* commandLine = line;
     char* params = NULL;
     
-    if(!prog || !data)
+    if(!prog || !data || len == 0)
     {
         return;
     }
@@ -145,12 +143,12 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     /* clean the line from tabs and stuff*/
     String_SimplfyLine(line);
 
-    params = String_SplitToTwo(command, SPACE_CH);
+    params = String_SplitToTwo(commandLine, SPACE_CH);
     
     /*should always be true*/
-    if(CommandHandler_IsLine(command))
+    if(CommandHandler.IsHandler(commandLine))
     {
-        CommandHandler_Handle(command,params, prog);
+        CommandHandler.Add(commandLine,&prog->code.bytes,prog->symbols);
     }
 }
 
@@ -187,6 +185,8 @@ bool Assembler_AssembleFile(char* asmFile)
 
     /* create symbol table*/
     File_ForEach(file, &Assembler_CreateSymbols,&assembly);
+
+    printf("asfdasdffeedf\n");
 
     printf("******** PENNDING COMMANDS ********\n");
     Queue_ForEach(assembly.penndingCommands,&PrintLine,NULL);

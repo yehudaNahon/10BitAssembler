@@ -4,19 +4,21 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "List.h"
 
-typedef size_t (*Action) (char*,char*,void*);
+
 
 typedef struct Handler
 {
-    const char* command;
-    Action act;
-
+    bool (*IsHandler) (const char* line);
+    size_t (*GetSize) (const char* line);
+    bool (*Add) (const char* line,List* bytes,List symbols);
 }Handler;
 
-size_t Handler_Handle(char* command,char* params, void* context, Handler handlers[], size_t numOfElements);
+bool Handler_HasHandler(const char* command,Handler handlers[], size_t numOfElements);
 
-bool Handler_HasHandler(char* command,Handler handlers[], size_t numOfElements);
+Handler* Handler_GetHandler(const char* command,Handler Handler_Init[],size_t len);
 
+bool Handler_Finder(void* handlerPtr,size_t len,void* context);
 
 #endif

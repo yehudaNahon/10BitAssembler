@@ -5,10 +5,6 @@
 #include "ByteTable.h"
 #include "List.h"
 
-bool DataHandler_IsLine(char* command);
-
-size_t DataHandler_Handle(char* command,char* params, List* bytes);
-
-
+extern Handler DataHandler; 
 
 #endif

@@ -4,187 +4,59 @@
 #include "String.h"
 #include "Log.h"
 #include <stdio.h>
+#include "Memory.h"
+#include "MatOperandHandler.h"
+#include "LabelOperandHandler.h"
+#include "RegOperandHandler.h"
+#include "ImmediateOperandHandler.h"
 
-#define DIRECT_CH ('#')
-bool IsImmediate(char* param)
+
+OperandByte OperandByte_Init(int type,int value)
 {
-    return param[0] == DIRECT_CH;
+    OperandByte byte;
+
+    byte.type = type;
+    byte.value = value;
+
+    return byte;
 }
 
-bool GetImmediate(char* param,int* o_val)
-{
-    *o_val =  Convert_StrToDecimal(&param[1]);
-    return true;
-}
-
-bool IsLabel(char* param)
-{
-    /* for now will only check that its not a label*/
-    if(CommandHandler_IsLine(param))
-    {
-        return false;
-    }
-
-    return true;
-}
-
-bool GetLabel(char* param,int* o_val,List symbols)
-{
-    Symbol* ptr = NULL;    
-    
-    if(List_FindData(symbols,(void**)&ptr,&Symbol_Finder,param) == 0)
-    {
-        return false;
-    }
- 
-    if(ptr)
-    {
-        *o_val = ptr->address;
-    }
- 
-    return true;
-}
-
-
-#define REG_CH ('r')
-bool IsRegAccess(char* param)
-{
-    return param[0] == REG_CH && Convert_StrToDecimal(&param[1]) < NUM_OF_REGS;
-}
-
-bool GetRegAccess(char* param,int* o_val)
-{
-    *o_val = Convert_StrToDecimal(&param[1]);
-    return true;
-}
-
-
-bool IsMatAccess(char* param)
-{
-    char buffer[MAX_LINE_LEN];
-    char* ptr = NULL;
-    char* mat = NULL;
-
-    /* validaty check*/
-    if(!param)
-    {
-        return false;
-    }
-
-    String_Copy(buffer, param, MAX_LINE_LEN);
-
-    
-    /* locate the mat []*/
-    mat = String_SplitToTwo(buffer, MAT_OPEN);
-    if(!mat)
-    {
-        return false;
-    }
-    
-    /*check the place is a valid label*/
-    if(!IsLabel(buffer))
-    {
-        return false;
-    }
-    
-    /* check all mat params are valid registers*/
-    ptr = String_Split(mat, MAT_CLOSE);
-    do
-    {
-        if(ptr[0] == MAT_OPEN)
-        {
-            ptr++;
-        }
-        if(!IsRegAccess(ptr))
-        {
-            return false;
-        }
-    }while((ptr = String_Split(NULL, MAT_CLOSE)));
-    
-    return true;
-}
-
-bool GetMatAccess(char* param, int* o_val, List symbols)
-{
-    char buffer[MAX_LINE_LEN];
-    char* ptr = NULL;
-    char* mat = NULL;
-
-    /* validaty check*/
-    if(!param)
-    {
-        return false;
-    }
-
-    String_Copy(buffer, param, MAX_LINE_LEN);
-
-    /* locate the mat []*/
-    mat = String_SplitToTwo(buffer, MAT_OPEN);
-    if(!mat)
-    {
-        return false;
-    }
-    
-    /*check the place is a valid label*/
-    if(!IsLabel(buffer))
-    {
-        return false;
-    }
-    
-    /* check all mat params are valid registers*/
-    ptr = String_Split(mat, MAT_CLOSE);
-    do
-    {
-        if(ptr[0] == MAT_OPEN)
-        {
-            ptr++;
-        }
-        if(!IsRegAccess(ptr))
-        {
-            return false;
-        }
-    }while((ptr = String_Split(NULL, MAT_CLOSE)));
-    
-    return true;
-}
-
-
-EOperandType GetOperandType(char* param)
+EOperandType Operand_GetType(char* param)
 {
     if(!param)
     {
         return eInvalid;
     }
 
-    if(IsImmediate(param))
+    if(ImmediateOperandHandler.IsHandler(param))
     {
         return eImmediate;
     }
-    else if(IsMatAccess(param))
+    else if(MatOperandHandler.IsHandler(param))
     {
         return eMetAccess;   
     }
-    else if(IsRegAccess(param))
+    else if(RegOperandHandler.IsHandler(param))
     {
-        return eDirectRegister;
+        return eRegister;
     }
-    else if(IsLabel(param))
+    else if(LabelOperandHandler.IsHandler(param))
     {
-        return eDirect;   
+        return eLabel;   
     }
 
     return eInvalid;
 }
 
-size_t GetOperandSize(char* operandStr)
+size_t Operand_GetSize(char* operandStr)
 {
-    switch(GetOperandType(operandStr))
+    switch(Operand_GetType(operandStr))
     {
         
         case eImmediate:
-        case eDirect:
+        case eLabel:
         case eMetAccess:
-        case eDirectRegister:
+        case eRegister:
             return 1;
         case eInvalid : 
             return 0;
@@ -194,18 +66,19 @@ size_t GetOperandSize(char* operandStr)
     }
 }
 
-bool GetOperandValue(char* operand,EOperandType type, Programme* prog,int* o_value)
+
+bool Operand_Add(char* operandStr,List* bytes, List symbols)
 {
-    switch(type)
+    switch(Operand_GetType(operandStr))
     {
         case eImmediate:
-            return GetImmediate(operand,o_value);
-        case eDirect:
-            return GetLabel(operand,o_value,prog->symbols);
+            return ImmediateOperandHandler.Add(operandStr, bytes,symbols);
+        case eLabel:
+            return LabelOperandHandler.Add(operandStr, bytes, symbols);
         case eMetAccess:
-            return GetMatAccess(operand,o_value,prog->symbols); 
-        case eDirectRegister:
-            return GetRegAccess(operand,o_value);
+            return MatOperandHandler.Add(operandStr, bytes, symbols); 
+        case eRegister:
+            return RegOperandHandler.Add(operandStr, bytes,symbols);
         case eInvalid : 
             break;
         default:
@@ -214,24 +87,4 @@ bool GetOperandValue(char* operand,EOperandType type, Programme* prog,int* o_val
     return false;
 }
 
-bool BuildOperandByte(char* operand,Programme* prog,OperandByte* byte)
-{
-    int value = 0;
-    EOperandType type = GetOperandType(operand);
-    if(type == eInvalid)
-    {
-        return false;
-    }
-    
-    byte->type = type;
-    printf("operand:%s \n type:%d\n",operand,type);
-    if(!GetOperandValue(operand,type, prog,&value))
-    {
-        printf("failed\n");
-        return false;
-    }
-    printf(" value:%d\n",value);
-    byte->value = value;
-    
-    return true;
-}
+

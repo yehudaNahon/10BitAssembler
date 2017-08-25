@@ -1,20 +1,19 @@
 #ifndef OPERAND_H
 #define OPERAND_H
 
-#include <stddef.h>
-#include <stdbool.h>
 #include "Assembly.h"
 #include "CommandByte.h"
+#include <stddef.h>
+#include <stdbool.h>
 
 #define OPERAND_DEFAULT (0)
-
 
 typedef enum EOperandType
 {
     eImmediate,
-    eDirect,
+    eLabel,
     eMetAccess,
-    eDirectRegister,
+    eRegister,
     eInvalid
 }EOperandType;
 
@@ -25,15 +24,14 @@ typedef struct OperandByte
     int value :OPERAND_VALUE_BITS_NUM;
 }OperandByte;
 
-bool BuildOperandByte(char* operand,Programme* prog,OperandByte* byte);
 
-EOperandType GetOperandType(char* param);
+OperandByte OperandByte_Init(int type,int value);
 
-size_t GetOperandSize(char* operandStr);
+EOperandType Operand_GetType(char* param);
 
-bool IsImmediate(char* param);
-bool IsLabel(char* param);
-bool IsRegAccess(char* param);
+size_t Operand_GetSize(char* operandStr);
+
+bool Operand_Add(char* operandStr, List* bytes, List symbols);
 
 
 #endif

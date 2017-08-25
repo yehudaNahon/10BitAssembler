@@ -6,15 +6,10 @@
 #include "Operand.h"
 
 
+bool CommandHandler_Add(const char* command,List* byte,List symbols);
 
+size_t CommandHandler_GetSize(const char* command);
 
-/*
-typedef struct Command
-{
-    CommandByte command;
-    size_t numOfOperands;
-    OperandByte extraInfo[MAX_NUM_OF_ARGS];
-}Command;
-*/
+bool CommandHandler_IsCommand(const char* command);
 
 #endif

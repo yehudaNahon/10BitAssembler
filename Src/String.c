@@ -39,6 +39,11 @@ char* String_Split(char* str, const char* delimiter)
 
 char* String_SplitToTwo(char* str,char ch)
 {
+    if(!str)
+    {
+        return NULL;
+    }
+
     char* ptr = strchr(str,ch);
     if(!ptr || String_Len(str) == (ptr - str))
     {
@@ -51,7 +56,7 @@ char* String_SplitToTwo(char* str,char ch)
     return ptr;
 }
 
-bool String_OnlyWithChars(char* word, char* chars)
+bool String_OnlyWithChars(const char* word,const char* chars)
 {
     /* if the length of the segment with the valid chars is the same as the intire length then its only with this chars*/
     return strspn(word,chars) == strlen(word);
@@ -92,26 +97,30 @@ void String_SimplfyLine(char* line)
     /*clean buffer*/
     Memory_Set(buffer,0,length);
 
-    /* spite to single words and create a new sentence only with the basic signs*/
+    /* splite to single words and create a new sentence only with the basic signs*/
     word = String_Split(line, WASTE_STR);
     /* if theres no words*/
     if(!word)
     {
         /*cleanup and exit*/
-        Memory_Delete(buffer);
         Memory_Copy(line,buffer,length);
+        Memory_Delete(buffer);
         return;
     }
 
     do
     {
         String_Append(buffer,word,length);
-        String_Append(buffer,SPACE_STR,length);
-    }while((word = String_Split(NULL, WASTE_STR)));
+        word = String_Split(NULL, WASTE_STR);
+        if(word)
+        {
+            String_Append(buffer,SPACE_STR,length);
+        }
+    }while(word);
 
- 
     /* copy back the info to line*/
     String_Copy(line,buffer,length);
+    line[String_Len(line)] = 0;
     /*release resources*/
     Memory_Delete(buffer);
 }
@@ -129,6 +138,39 @@ void String_PrintLine(void* line, size_t* len, void* context)
 bool String_Empty(const char* line)
 {
     return line ? line[0] == 0 || line[0] == '\n' : true;
+}
+
+#define NUM_BEGIN_CH ('0')
+#define NUM_END_CH ('9')
+#define NUM_MINUS_INDICATOR_CH ('-')
+bool String_IsNumber(const char* numStr)
+{
+    const char* ch = numStr;
+    
+    if(*ch == NUM_MINUS_INDICATOR_CH)
+    {
+        ch++;
+    }
+    
+    for(; *ch != 0 ; ch++)
+    {
+        if(*ch < NUM_BEGIN_CH || *ch > NUM_END_CH)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+#define BIG_LETTER_BEGIN_CH ('A')
+#define BIG_LETTER_END_CH ('Z')
+#define SMALL_LETTER_BEGIN_CH ('a')
+#define SMALL_LETTER_END_CH ('z')
+
+bool String_IsLetter(const char ch)
+{
+    return (ch >= BIG_LETTER_BEGIN_CH && ch <= BIG_LETTER_END_CH) || (ch >= SMALL_LETTER_BEGIN_CH && ch <= SMALL_LETTER_END_CH);
 }
 
 

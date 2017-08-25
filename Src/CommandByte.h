@@ -1,6 +1,8 @@
 #ifndef COMMAND_BYTE_H
 #define COMMAND_BYTE_H
 
+#include "Byte.h"
+
 /* General for all commands in the assembly file*/
 #define TYPE_BITS_NUM (2)
 
@@ -17,27 +19,6 @@
 #define TYPE_DEFAULT (0)
 
 
-typedef enum ECommandType
-{
-    eNoOperand,
-    eSingleOperand,
-    eTwoOperands
-}ECommandType;
-
-typedef enum EEncodingType
-{
-    eAbsolute,
-    eExternal,
-    eRelocatable
-}EEncodingType;
-
-typedef struct CommandType
-{
-    const char* command;
-    ECommandType type;
-}CommandType;
-
-
 typedef struct CommandByte
 {
     int type :TYPE_BITS_NUM;
@@ -46,7 +27,7 @@ typedef struct CommandByte
     int opcode :OPCODE_TYPE_BITS_NUM;
 }CommandByte;
 
-
+CommandByte CommandByte_Init(int opcode,int srcOp,int dstOp);
 
 
 #endif

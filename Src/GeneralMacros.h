@@ -3,6 +3,7 @@
 
 #define MAX(num1, num2) (num1 >= num2 ? num1 : num2)
 #define MIN(num1, num2) (num1 >= num2 ? num2 : num1)
-#define NUM_OF_ELEM(arr) (sizeof(arr) / sizeof(arr[0]))
+#define NUM_OF_ELEM(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
+
 
 #endif
