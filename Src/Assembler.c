@@ -16,6 +16,7 @@
 #include "DataHandler.h"
 #include "CommandByte.h"
 #include "EntryHandler.h"
+#include "ExternHandler.h"
 
 #define LABEL_INDICATOR (':')
 #define LIGAL_LABEL_CH LETTERS_CH UPPER_CASE_CH NUMBERS_CH
@@ -28,7 +29,7 @@ bool Assembly_IsComment(const char* line)
     return line ? line[0] == COMMENT_CH : false;
 }
 
-bool Assembly_HasLabel(const char* line)
+bool HasLabel(const char* line)
 {
     /*TODO : add more tests*/
     if(String_FindChar(line,LABEL_INDICATOR))
@@ -40,9 +41,8 @@ bool Assembly_HasLabel(const char* line)
 }
 
 
-
 #define EXTERN_COMMAND_STR (".extern")
-bool Assembly_IsExtern(const char* line)
+bool IsExtern(const char* line)
 {
     return String_Compare(line,EXTERN_COMMAND_STR,String_Len(EXTERN_COMMAND_STR)) == 0;
 }
@@ -99,7 +99,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     }
 
     
-    if(Assembly_HasLabel(line))
+    if(HasLabel(line))
     {
         commandLine = String_SplitToTwo(line, LABEL_INDICATOR);
         label = line;
@@ -107,8 +107,11 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
         while(!String_IsLetter(*commandLine) && *commandLine != '.') commandLine++;
     }
     
-    /*printf("%s : %s - %s\n",label,commandLine,params);*/
-    if(EntryHandler.IsHandler(commandLine))
+    if(ExternHandler.IsHandler(commandLine))
+    {
+        ExternHandler.Add(commandLine,&assembly->prog.data.bytes,&assembly->prog.symbols);
+    }
+    else if(EntryHandler.IsHandler(commandLine))
     {
         Queue_enqueue(&assembly->penndingCommands, commandLine, String_Len(commandLine) + 1);
     }

@@ -29,7 +29,7 @@ bool EntryHandler_Add(const char* line,List* bytes,List* symbols)
         return false;
     }
     symbolsPtr++;
-
+    
     symbolStr = String_Split(symbolsPtr,COMMA_STR);
     if(!symbolStr)
     {
