@@ -86,8 +86,9 @@ bool StringCommandHandler_IsHandler(const char* command)
     return DataUtils_IsCommand(command,STRING_COMMAND_STR);
 } 
 
-size_t StringCommandHandler_GetSize(const char* params)
+size_t StringCommandHandler_GetSize(const char* line)
 {
+    const char* params = DataUtils_GetParams(line);
     /*byte for each character plus null char minus "" chars*/
     return String_Len(params) - 2 + 1;
 }

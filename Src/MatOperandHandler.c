@@ -16,7 +16,7 @@ Handler MatOperandHandler = {
 
 size_t MatOPerandHandler_GetSize(const char* param)
 {
-    return 3;
+    return 2;
 }
 
 

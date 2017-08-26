@@ -2,8 +2,8 @@
 #include "RegOperandHandlerInternals.h"
 #include "Convert.h"
 #include "Operand.h"
-
-
+#include "BitArray.h"
+#include <stdio.h>
 
 
 
@@ -21,11 +21,17 @@ bool RegOperandHandler_IsHandler(const char* param)
 bool RegOperandHandler_Add(const char* operand,List* bytes,List symbols)
 {
     OperandByte byte;
+    uint8_t bytesArr;
     if(!operand || !bytes || !RegOperandHandler_IsHandler(operand))
     {
         return false;
     }
     
+    printf("reg : %s - ",operand);
+    bytesArr =Convert_StrToDecimal(&operand[1]); 
+    PrintBits(&bytesArr,4);
+    printf("\n");
+
     byte = OperandByte_Init(eRegister,Convert_StrToDecimal(&operand[1]));
     return List_Add(bytes,&byte, sizeof(OperandByte));
 }

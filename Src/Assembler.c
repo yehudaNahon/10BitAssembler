@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
-
+#include "BitArray.h"
 #include "Assembler.h"
 #include "AssemblerInternals.h"
 #include "Assembly.h"
@@ -14,6 +14,7 @@
 #include "GeneralMacros.h"
 #include "CommandHandler.h"
 #include "DataHandler.h"
+#include "CommandByte.h"
 
 #define LABEL_INDICATOR (':')
 #define LIGAL_LABEL_CH LETTERS_CH UPPER_CASE_CH NUMBERS_CH
@@ -70,6 +71,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     char* commandLine = line;
     char* label = NULL;
     Symbol symbol;
+    size_t size = 0;
     
     if(!assembly || !data)
     {
@@ -93,9 +95,10 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     {
         commandLine = String_SplitToTwo(line, LABEL_INDICATOR);
         label = line;
-        String_SimplfyLine(commandLine);
-        String_SimplfyLine(label);
+        /* need to find a better solution*/
+        while(!String_IsLetter(*commandLine) && *commandLine != '.') commandLine++;
     }
+    
     
     /*printf("%s : %s - %s\n",label,commandLine,params);*/
     
@@ -103,24 +106,41 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     {
         if(label)
         {
-            symbol = Symbol_Init(label,assembly->prog.data.counter + 1);
+            symbol = Symbol_Init(label,assembly->prog.data.counter);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));
         }
-        
-        assembly->prog.data.counter += DataHandler.GetSize(commandLine);
-        DataHandler.Add(commandLine,&assembly->prog.data.bytes,assembly->prog.symbols);
+        size = DataHandler.GetSize(commandLine);
+        if(size == 0)
+        {
+            Log(eError,"un supported data command operand: %s",commandLine);
+            /*print a warning of a wrong command*/
+        }
+        else
+        {
+            assembly->prog.data.counter += size;
+            DataHandler.Add(commandLine,&assembly->prog.data.bytes,assembly->prog.symbols);
+        }
+
     }
     else if(CommandHandler.IsHandler(commandLine))
     {
         if(label)
         {
-            symbol = Symbol_Init(label,assembly->prog.code.counter + 1);
+            symbol = Symbol_Init(label,assembly->prog.code.counter);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));    
         }
-        assembly->prog.code.counter += CommandHandler.GetSize(commandLine);
+        size = CommandHandler.GetSize(commandLine);
+        if(size == 0)
+        {
+            Log(eError,"un supported command operands: %s",commandLine);
+        }
+        else
+        {
+            assembly->prog.code.counter += size;
+            Queue_enqueue(&assembly->penndingCommands, commandLine, String_Len(commandLine) + 1);
+        }
         
         /* add the pennding queue*/
-        Queue_enqueue(&assembly->penndingCommands, commandLine, String_Len(commandLine) + 1);
     }
 }
 
@@ -162,7 +182,7 @@ void PrintByte(const void* data,size_t len, void* context)
 
 void PrintLine(const void* data, size_t len, void* context)
 {
-    printf("%s\n",data);
+    printf("%s\n",(char*) data);
 }
 
 
@@ -179,24 +199,25 @@ bool Assembler_AssembleFile(char* asmFile)
         return false;
     }
 
+    /* for code testing need to remove*/
+    assembly.prog.code.counter = 100;
+    assembly.prog.data.counter = 122;
+
     /* create symbol table*/
     File_ForEach(file, &Assembler_CreateSymbols,&assembly);
 
-    printf("******** PENNDING COMMANDS ********\n");
-    Queue_ForEach(assembly.penndingCommands,&PrintLine,NULL);
-
     printf("******** DATA MEMORY **************\n");
-    List_ForEach(assembly.prog.data.bytes, &PrintByte, NULL);
+    List_ForEach(assembly.prog.data.bytes, &PrintBitsIter, NULL);
 
     printf("*********** SYMBOLS************\n");
     List_ForEach(assembly.prog.symbols, &PrintSymbol, NULL);
-    
+    printf("\n\n");    
     Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly.prog);
-    
+    printf("\n\n");
     printf("********** CODE **************\n");
     /*printf("%lu %p\n",List_Len(assembly.prog.code.bytes),&prog->code.bytes);*/
-    List_ForEach(assembly.prog.code.bytes,&PrintByte,NULL);
-    
+    List_ForEach(assembly.prog.code.bytes,&PrintBitsIter,NULL);
+
     /*close the file*/
     if(!File_Close(file))
     {

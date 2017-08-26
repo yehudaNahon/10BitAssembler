@@ -1,0 +1,32 @@
+#include "Memory.h"
+#include "BitArray.h"
+#include <stdio.h>
+
+#define SetBit(A,k)     ( A[(k/32)] |= (1 << (k%32)) )
+#define ClearBit(A,k)   ( A[(k/32)] &= ~(1 << (k%32)) )
+#define GetBit(A,k)    ( A[(k/32)] & (1 << (k%32)) )
+
+
+void PrintBits(uint8_t bytes[],size_t numOfBits)
+{
+    int i;
+    for(i=0;i < numOfBits;i++)
+    {
+        printf("%s",GetBit(bytes,i) ? "1" : "0");
+    }
+}
+
+void PrintBitsIter(const void* data,size_t len,void* context)
+{
+    uint8_t *bytes = Memory_Allocate(len);
+
+    Memory_Copy(bytes,data,len);
+
+    PrintBits(bytes,10);
+
+    printf("\n");
+
+    Memory_Delete(bytes);
+}
+
+

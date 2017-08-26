@@ -118,9 +118,11 @@ void String_SimplfyLine(char* line)
         }
     }while(word);
 
+    Memory_Copy(line,buffer,length);
+    
     /* copy back the info to line*/
-    String_Copy(line,buffer,length);
-    line[String_Len(line)] = 0;
+    /*String_Copy(line,buffer,length);
+    line[String_Len(line)] = 0;*/
     /*release resources*/
     Memory_Delete(buffer);
 }

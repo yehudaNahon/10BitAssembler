@@ -28,7 +28,11 @@ size_t OperandHandler_GetSize(const char* commandStr)
     GetHandlers();
     Handler *ptr = Handler_GetHandler(commandStr,handlers,NUM_OF_ELEM(handlers));
 
-    return ptr && ptr->GetSize(commandStr);
+    if(!ptr)
+    {
+        return 0;
+    }
+    return ptr->GetSize(commandStr);
 }
 
 

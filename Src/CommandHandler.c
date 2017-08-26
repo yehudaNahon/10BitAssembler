@@ -34,7 +34,12 @@ size_t CommandHandler_GetSize(const char* command)
  
     Handler* ptr = Handler_GetHandler(command,handlers,NUM_OF_ELEM(handlers));
     
-    return ptr && ptr->GetSize(command);
+    if(!ptr)
+    {
+        return 0;
+    }
+
+    return ptr->GetSize(command);
 }
 
 bool CommandHandler_IsCommand(const char* command)
