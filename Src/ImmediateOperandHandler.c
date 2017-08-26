@@ -4,14 +4,17 @@
 #include "String.h"
 #include "Operand.h"
 
-Handler ImmediateOperandHandler = {
-    &ImmediateOperandHandler_IsHandler,
-    &ImmediateOperandHandler_GetSize,
-    &ImmediateOperandHandler_Add,
-};
 
+int Immediate_GetValue(const char* immediateStr)
+{
+    if(!immediateStr)
+    {
+        return 0;
+    }
+    return Convert_StrToDecimal(&immediateStr[1]);
+}
 
-bool ImmediateOperandHandler_IsHandler(const char* param)
+bool IsImmediate(const char* param)
 {
     if(!param || param[0] != IMMEDIATE_INDICATOR_CH || !String_IsNumber(&param[1]))
     {
@@ -21,20 +24,20 @@ bool ImmediateOperandHandler_IsHandler(const char* param)
     return true;
 }
 
-size_t ImmediateOperandHandler_GetSize(const char* param)
+size_t SizeImmediate()
 {
     return 1;
 }
 
-bool ImmediateOperandHandler_Add(const char* operand,List* bytes,List symbol)
+bool AddImmediate(const char* operand,List* bytes)
 {
-    OperandByte byte;
-    if(!operand || !bytes || ImmediateOperandHandler_IsHandler(operand))
+    Byte byte;
+    if(!operand || !bytes || IsImmediate(operand))
     {
         return false;
     }
 
     byte = OperandByte_Init(eImmediate,Convert_StrToDecimal(&operand[1]));
-    return List_Add(bytes,&byte, sizeof(OperandByte));
+    return Byte_Add(byte,bytes);
 }
 

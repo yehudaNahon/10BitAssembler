@@ -11,12 +11,23 @@
 #include "ImmediateOperandHandler.h"
 
 
-OperandByte OperandByte_Init(int type,int value)
+Byte RegOperandByte_Init(int src,int dst)
 {
-    OperandByte byte;
+    Byte byte;
+    RegOperandByte* ptr = (RegOperandByte*)&byte;
+    ptr->type = eAbsolute;
+    ptr->src = src;
+    ptr->dst = dst;
 
-    byte.type = type;
-    byte.value = value;
+    return byte;
+}
+
+Byte OperandByte_Init(int type,int value)
+{
+    Byte byte;
+    OperandByte* ptr = (OperandByte*)&byte;
+    ptr->type = type;
+    ptr->value = value;
 
     return byte;
 }
@@ -28,19 +39,19 @@ EOperandType Operand_GetType(char* param)
         return eInvalid;
     }
 
-    if(ImmediateOperandHandler.IsHandler(param))
+    if(IsImmediate(param))
     {
         return eImmediate;
     }
-    else if(MatOperandHandler.IsHandler(param))
+    else if(IsMat(param))
     {
-        return eMetAccess;   
+        return eMatAccess;   
     }
-    else if(RegOperandHandler.IsHandler(param))
+    else if(IsReg(param))
     {
         return eRegister;
     }
-    else if(LabelOperandHandler.IsHandler(param))
+    else if(IsLabel(param))
     {
         return eLabel;   
     }
@@ -48,16 +59,18 @@ EOperandType Operand_GetType(char* param)
     return eInvalid;
 }
 
-size_t Operand_GetSize(char* operandStr)
+size_t Operand_GetSize(EOperandType operand)
 {
-    switch(Operand_GetType(operandStr))
+    switch(operand)
     {
-        
         case eImmediate:
+            return SizeImmediate();
         case eLabel:
-        case eMetAccess:
+            return SizeLabel();
         case eRegister:
-            return 1;
+            return SizeReg();
+        case eMatAccess:
+            return SizeMat();
         case eInvalid : 
             return 0;
         default:
@@ -66,25 +79,75 @@ size_t Operand_GetSize(char* operandStr)
     }
 }
 
-
-bool Operand_Add(char* operandStr,List* bytes, List symbols)
+char* Operand_SplitOperands(char* operands)
 {
-    switch(Operand_GetType(operandStr))
-    {
-        case eImmediate:
-            return ImmediateOperandHandler.Add(operandStr, bytes,symbols);
-        case eLabel:
-            return LabelOperandHandler.Add(operandStr, bytes, symbols);
-        case eMetAccess:
-            return MatOperandHandler.Add(operandStr, bytes, symbols); 
-        case eRegister:
-            return RegOperandHandler.Add(operandStr, bytes,symbols);
-        case eInvalid : 
-            break;
-        default:
-            Log(eError, "recieved a unsported operandType");
-    }
-    return false;
+    return String_SplitToTwo(operands,COMMA_CH);
 }
 
+size_t Operand_GetOperandsSize(EOperandType first,EOperandType second)
+{
+    if(first == eRegister && second == eRegister)
+    {
+        return 1;
+    }
 
+    return Operand_GetSize(first) + Operand_GetSize(second);
+}
+
+bool Operand_AddOperands(char* first,char* second,List* bytes,List symbols)
+{
+    EOperandType firstType,secondType;
+    Byte byte,indexByte;
+    bool answer = false;
+    firstType = Operand_GetType(first);
+    secondType = Operand_GetType(second);
+
+    if(firstType == eRegister && secondType == eRegister)
+    {
+        return AddRegs(first,second,bytes);
+    }
+
+    if(first)
+    {
+        switch (firstType)
+        {
+            case eImmediate:
+                answer = AddImmediate(first,bytes);
+                break;
+            case eLabel:
+                answer = AddLabel(first,bytes,symbols);
+                break;
+            case eMatAccess:
+                answer = AddMat(first,bytes,symbols);
+                break;
+            case eRegister:    
+                answer = AddRegs(first,0,bytes);
+                break;
+            case eInvalid:
+                return false;
+        }
+    }
+
+    if(second)
+    {
+        switch (secondType)
+        {
+            case eImmediate:
+                answer &= AddImmediate(second,bytes);
+                break;
+            case eLabel:
+                answer &= AddLabel(second,bytes,symbols);
+                break;
+            case eMatAccess:
+                answer &= AddMat(second,bytes,symbols);
+                break;
+            case eRegister:
+                answer &= AddRegs(0,second,bytes);
+                break;
+            case eInvalid:
+                return false;
+        }
+    }
+
+    return answer;
+}

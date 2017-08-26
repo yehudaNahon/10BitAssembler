@@ -50,6 +50,7 @@ bool DataUtils_IsCommand(const char* commandStr,const char* command)
 
 bool StringCommandHandler_Add(const char* line, List* bytes,List symbols)
 {
+    Byte byte;
     const char* params = DataUtils_GetParams(line);
     const char* ptr = NULL;
     size_t size = 0;
@@ -64,7 +65,8 @@ bool StringCommandHandler_Add(const char* line, List* bytes,List symbols)
     for(ptr = &params[1], size = 0; *ptr != STR_CLOSE ; ptr++, size++)
     {
         /*add the string to the list*/
-        if(!Byte_Add(*ptr, bytes))
+        byte = Byte_Init(*ptr);
+        if(!Byte_Add(byte, bytes))
         {
             Log(eError, "failed adding byte to list");
             return false;
@@ -72,7 +74,8 @@ bool StringCommandHandler_Add(const char* line, List* bytes,List symbols)
     }
     
     /*add null char to the list*/
-    if(!Byte_Add(0, bytes))
+    byte = Byte_Init(0);
+    if(!Byte_Add(byte, bytes))
     {
         Log(eError, "failed adding byte to list");
         return false;
@@ -130,6 +133,7 @@ size_t MatCommandHandler_CalculateSize(const char* matStr)
 
 bool MatCommandHandler_Add(const char* line,List* bytes,List symbols)
 {
+    Byte byte;
     const char* param = DataUtils_GetParams(line);
     char paramsBuf[MAX_MAT_PARAM_LEN];
     char* sizeStr = NULL;
@@ -176,8 +180,8 @@ bool MatCommandHandler_Add(const char* line,List* bytes,List symbols)
                 Log(eError, "recieved non number is mat command : %s",valueStr);
                 return false;
             }
-
-            if(!Byte_Add(Convert_StrToDecimal(valueStr),bytes))
+            byte = Byte_Init(Convert_StrToDecimal(valueStr));
+            if(!Byte_Add(byte,bytes))
             {
                 Log(eError, "failed in byte insertion");
                 return false;
@@ -189,7 +193,8 @@ bool MatCommandHandler_Add(const char* line,List* bytes,List symbols)
 
     while(size != 0)
     {
-        if(!Byte_Add(0,bytes))
+        byte = Byte_Init(0);
+        if(!Byte_Add(byte,bytes))
         {
             Log(eError, "failed in byte insertion");
             return false;
@@ -264,6 +269,7 @@ size_t DataCommandHandler_GetSize(const char* line)
 
 bool DataCommandHandler_Add(const char* line,List* bytes, List symbols)
 {
+    Byte byte;
     const char* params = DataUtils_GetParams(line);
     char buffer[MAX_MAT_PARAM_LEN];
     char* valueStr = NULL;
@@ -289,8 +295,8 @@ bool DataCommandHandler_Add(const char* line,List* bytes, List symbols)
             }
 
             value = Convert_StrToDecimal(valueStr);
-
-            if(!Byte_Add(value,bytes))
+            byte = Byte_Init(value);
+            if(!Byte_Add(byte,bytes))
             {
                 Log(eError, "Failed Adding byte to byte list");
                 return false;

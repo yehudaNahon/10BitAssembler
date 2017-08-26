@@ -27,7 +27,7 @@ typedef struct CommandByte
     int type :TYPE_BITS_NUM;
 }CommandByte;
 
-CommandByte CommandByte_Init(int opcode,int srcOp,int dstOp);
+Byte CommandByte_Init(int opcode,int srcOp,int dstOp);
 
 void CommandByte_PrintIter(const void* command,size_t len,void* context);
 

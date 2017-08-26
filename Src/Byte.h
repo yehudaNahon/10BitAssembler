@@ -21,7 +21,9 @@ typedef struct Byte
     int value :BYTE_LEN;
 }Byte;
 
-bool Byte_Add(int value,List* bytes);
+Byte Byte_Init(int value);
+
+bool Byte_Add(Byte byte,List* bytes);
 
 
 

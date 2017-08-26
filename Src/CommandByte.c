@@ -5,14 +5,15 @@
 
 #define STR(x) #x
 
-CommandByte CommandByte_Init(int opcode,int srcOp,int dstOp)
+Byte CommandByte_Init(int opcode,int srcOp,int dstOp)
 {
-    CommandByte byte;
-    
-    byte.opcode = opcode;
-    byte.destOperand = dstOp;
-    byte.srcOperand = srcOp;
-    byte.type = eAbsolute;
+    Byte byte;
+    CommandByte* ptr = (CommandByte*) &byte;
+
+    ptr->opcode = opcode;
+    ptr->destOperand = dstOp;
+    ptr->srcOperand = srcOp;
+    ptr->type = eAbsolute;
 
     return byte;
 }

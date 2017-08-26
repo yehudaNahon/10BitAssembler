@@ -7,9 +7,6 @@
 #include "List.h"
 
 #define MAX_LINE_LEN (800)
-#define NUM_OF_REGS (8)
-#define MAT_OPEN ('[')
-#define MAT_CLOSE ("]")
 
 #define COMMA_STR (",")
 

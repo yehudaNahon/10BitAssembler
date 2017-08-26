@@ -1,9 +1,14 @@
 #ifndef IMMEDIATE_H
 #define IMMEDIATE_H
 
-#include "Handler.h"
+#include "List.h"
 
-extern Handler ImmediateOperandHandler;
+bool IsImmediate(const char* immediate);
+
+bool AddImmediate(const char* immediate,List* bytes);
+
+size_t SizeImmediate();
+
 
 
 #endif

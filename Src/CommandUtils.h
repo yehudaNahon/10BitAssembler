@@ -21,7 +21,7 @@ char* CommandUtils_SplitOperands(char* operands,size_t len);
 
 int CommandUtils_GetOpcode(const char* command,const CommandOpcodes opcodeList[],size_t len);
 
-bool CommandUtils_AddCommandByte(const char* command,char* src,char* dst,const CommandOpcodes* opcodes, size_t len,List* bytes);
+bool CommandUtils_AddCommandByte(const char* command,const char* operands,const CommandOpcodes* opcodes, size_t len,List* bytes);
 
 bool CommandUtils_IsHandler(const char* commandStr,const CommandOpcodes opcodeList[],size_t len);
 

@@ -3,7 +3,7 @@
 
 #include "Handler.h"
 
-#define MAX_OPERAND_STR_LEN (80)
+#define MAX_LINE_LEN (80)
 
 extern Handler OperandsHandler;
 

@@ -10,7 +10,7 @@
 void PrintBits(uint8_t bytes[],size_t numOfBits)
 {
     int i;
-    for(i=0;i < numOfBits;i++)
+    for(i=numOfBits - 1;i >= 0 ;i--)
     {
         printf("%s",GetBit(bytes,i) ? "1" : "0");
     }

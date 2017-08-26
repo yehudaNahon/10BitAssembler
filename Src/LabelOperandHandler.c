@@ -6,20 +6,38 @@
 #include "Operand.h"
 #include "CommandHandler.h"
 
-Handler LabelOperandHandler = {
-    &LabelOperandHandler_IsHandler,
-    &LabelOperandHandler_GetSize,
-    &LabelOperandHandler_Add,
-};
+
+int Label_GetValue(char* labelStr,List symbols)
+{
+    Byte byte;
+    Symbol* ptr = NULL;    
+    
+    if(!labelStr)
+    {
+        Log(eError, "Reiceived a none label operand : %s",labelStr);
+        return -1;
+    }
+    if(List_FindData(symbols,(void**)&ptr,&Symbol_Finder,labelStr) == 0)
+    {
+        return -1;
+    }
+    
+    if(!ptr)
+    {    
+        return -1;
+    }
+    
+    return ptr->address;
+}
 
 
-size_t LabelOperandHandler_GetSize(const char* param)
+size_t SizeLabel()
 {
     return 1;
 }
 
 
-bool LabelOperandHandler_IsHandler(const char* param)
+bool IsLabel(const char* param)
 {
     const char* ligalChars = LETTERS_CH NUMBERS_CH UPPER_CASE_CH;
     if( CommandHandler.IsHandler(param) || String_Len(param) > MAX_LABEL_LEN || !String_IsLetter(param[0]) || !String_OnlyWithChars(param,ligalChars))
@@ -30,12 +48,12 @@ bool LabelOperandHandler_IsHandler(const char* param)
     return true;
 }
 
-bool LabelOperandHandler_Add(const char* operand,List* bytes,List symbols)
+bool AddLabel(char* operand,List* bytes,List symbols)
 {
-    OperandByte byte;
+    Byte byte;
     Symbol* ptr = NULL;    
     
-    if(!operand || !bytes || !LabelOperandHandler_IsHandler(operand))
+    if(!operand || !bytes || !IsLabel(operand))
     {
         Log(eError, "Reiceived a none label operand : %s",operand);
         return false;
@@ -51,7 +69,7 @@ bool LabelOperandHandler_Add(const char* operand,List* bytes,List symbols)
     }
     
     byte = OperandByte_Init(eLabel,ptr->address);
-    return List_Add(bytes,&byte,sizeof(OperandByte));
+    return Byte_Add(byte,bytes);
 }
 
 

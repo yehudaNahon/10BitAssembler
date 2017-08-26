@@ -47,7 +47,7 @@ bool NoOperandHandler_Add(const char* commandStr,List* bytes,List symbols)
         return false;
     }
 
-    if(!CommandUtils_AddCommandByte(commandStr,NULL,NULL,NoOperand_Opcodes,NUM_OF_ELEM(NoOperand_Opcodes),bytes))
+    if(!CommandUtils_AddCommandByte(commandStr,NULL,NoOperand_Opcodes,NUM_OF_ELEM(NoOperand_Opcodes),bytes))
     {
         Log(eError, "Failed Adding command to the memory table : %s",commandStr);
         return false;
@@ -97,13 +97,13 @@ bool SingleOperandHandler_Add(const char* commandStr,List* bytes,List symbols)
         return 0;
     }
     
-    if(!CommandUtils_AddCommandByte(commandStr,operand,NULL,SingleOperand_Opcodes,NUM_OF_ELEM(SingleOperand_Opcodes),bytes))
+    if(!CommandUtils_AddCommandByte(commandStr,operand,SingleOperand_Opcodes,NUM_OF_ELEM(SingleOperand_Opcodes),bytes))
     {
         Log(eError, "Failed Adding command to the memory table : %s",commandStr);
         return false;
     }
-    
-    if(!OperandHandler.Add(operand,bytes,symbols))
+
+    if(!OperandsHandler.Add(operand,bytes,symbols))
     {
         Log(eError, "Failed Adding operand to list");
         return false;
@@ -119,7 +119,7 @@ size_t SingleOperandHandler_GetSize(const char* commandStr)
 
     CommandUtils_GetOperands(commandStr,operand,MAX_OPERAND_STR_LEN);
 
-    return OperandHandler.GetSize(operand) + 1;
+    return OperandsHandler.GetSize(operand) + 1;
 }
 
 
@@ -141,46 +141,33 @@ const CommandOpcodes TwoOperands_Opcodes[] = {
 
 bool TwoOperandsHandler_Add(const char* commandStr,List* bytes,List symbols)
 {
-    char operand[MAX_OPERAND_STR_LEN];
-    char* secondOperand = NULL;
-
+    char operands[MAX_OPERAND_STR_LEN];
+    
     if(!commandStr || !bytes)
     {
         Log(eError, "TwoOperandsHandler_Add :: recieved a null pointer");
         return false;
     }
     
-    if(!CommandUtils_GetOperands(commandStr,operand,MAX_OPERAND_STR_LEN))
+    if(!CommandUtils_GetOperands(commandStr,operands,MAX_OPERAND_STR_LEN))
     {
         Log(eError,"did not recieved any operands : %s", commandStr);
         return 0;
     }
-    secondOperand = CommandUtils_SplitOperands(operand,MAX_OPERAND_STR_LEN);
-    if(!secondOperand)
-    {
-        Log(eError, "Recieved only 1 operand in a 2 operand command : %s", commandStr);
-        return false;
-    }
-    
-    if(!CommandUtils_AddCommandByte(commandStr,operand,secondOperand,TwoOperands_Opcodes,NUM_OF_ELEM(TwoOperands_Opcodes),bytes))
+
+    if(!CommandUtils_AddCommandByte(commandStr,operands,TwoOperands_Opcodes,NUM_OF_ELEM(TwoOperands_Opcodes),bytes))
     {
         Log(eError, "Failed Adding command to the memory table : %s",commandStr);
         return false;
     }
     
 
-    if(!OperandHandler.Add(operand,bytes,symbols))
+    if(!OperandsHandler.Add(operands,bytes,symbols))
     {
-        Log(eError, "Failed Adding operand to list : %s",operand);
+        Log(eError, "Failed Adding operand to list : %s",operands);
         return false;
     }
 
-
-    if(!OperandHandler.Add(secondOperand,bytes,symbols))
-    {
-        Log(eError, "Failed Adding operand to list : %s",secondOperand);
-        return false;
-    }
 
     return true;
 }
@@ -205,7 +192,7 @@ size_t TwoOperandsHandler_GetSize(const char* commandStr)
         return 0;
     }
 
-    return OperandHandler.GetSize(operand) + OperandHandler.GetSize(secondOperand) + 1;
+    return OperandsHandler.GetSize(operand) + OperandsHandler.GetSize(secondOperand) + 1;
 
 }
 

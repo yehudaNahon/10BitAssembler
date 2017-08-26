@@ -66,8 +66,11 @@ int CommandUtils_GetOpcode(const char* command,const CommandOpcodes opcodeList[]
     return -1;
 }
 
-bool CommandUtils_AddCommandByte(const char* command,char* src,char* dst,const CommandOpcodes* opcodes, size_t len,List* bytes)
+bool CommandUtils_AddCommandByte(const char* command,const char* operands,const CommandOpcodes* opcodes, size_t len,List* bytes)
 {
+    char buffer[MAX_LINE_LEN];
+    char* src = buffer;
+    char* dst;
     int opcode = 0;
     EOperandType srcType = 0;
     EOperandType dstType = 0;
@@ -79,6 +82,10 @@ bool CommandUtils_AddCommandByte(const char* command,char* src,char* dst,const C
         return false;
     }
     
+    String_Copy(buffer,operands,sizeof(buffer));
+
+    dst = Operand_SplitOperands(buffer);
+
     if(src)
     {
         srcType = Operand_GetType(src);
@@ -99,8 +106,8 @@ bool CommandUtils_AddCommandByte(const char* command,char* src,char* dst,const C
         }
     }
 
-    CommandByte byte = CommandByte_Init(opcode, srcType,dstType);
-    if(!List_Add(bytes, &byte, sizeof(CommandByte)))
+    Byte byte = CommandByte_Init(opcode, srcType,dstType);
+    if(!Byte_Add(byte,bytes))
     {
         Log(eError, "Failed adding element to list : %s",command);
         return false;
