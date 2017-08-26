@@ -33,12 +33,12 @@ bool AddRegs(const char* reg1,const char* reg2,List* bytes)
         return false;
     }
     
-    if(!reg1 && IsReg(reg1))
+    if(reg1 && IsReg(reg1))
     {
         val1 = Convert_StrToDecimal(&reg1[1]);
     }
 
-    if(!reg2 && IsReg(reg2))
+    if(reg2 && IsReg(reg2))
     {
         val2 = Convert_StrToDecimal(&reg2[1]);
     }

@@ -21,10 +21,10 @@
 
 typedef struct CommandByte
 {
-    int opcode :OPCODE_TYPE_BITS_NUM;
-    int srcOperand :OPERAND_TYPE_BITS_NUM;
-    int destOperand :OPERAND_TYPE_BITS_NUM;
     int type :TYPE_BITS_NUM;
+    int destOperand :OPERAND_TYPE_BITS_NUM;
+    int srcOperand :OPERAND_TYPE_BITS_NUM;
+    int opcode :OPCODE_TYPE_BITS_NUM;
 }CommandByte;
 
 Byte CommandByte_Init(int opcode,int srcOp,int dstOp);

@@ -60,7 +60,7 @@ bool IsMat(const char* operand)
     return true;
 }
 
-bool AddMat(const char* operand,List* bytes,List symbols)
+bool AddMat(const char* operand,List* bytes,List* symbols)
 {
     char buffer[MAX_LINE_LEN];
     char* ptr = NULL;
@@ -107,7 +107,7 @@ bool AddMat(const char* operand,List* bytes,List symbols)
     }
 
     reg2++;
-    reg2 = String_SplitToTwo(reg2, MAT_CLOSE);
+    String_SplitToTwo(reg2, MAT_CLOSE);
     
     if(!IsReg(reg1) || !IsReg(reg2))
     {
@@ -117,7 +117,6 @@ bool AddMat(const char* operand,List* bytes,List symbols)
     {
         return false;
     }
-
     return true;
 }
 

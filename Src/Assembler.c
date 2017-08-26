@@ -15,6 +15,7 @@
 #include "CommandHandler.h"
 #include "DataHandler.h"
 #include "CommandByte.h"
+#include "EntryHandler.h"
 
 #define LABEL_INDICATOR (':')
 #define LIGAL_LABEL_CH LETTERS_CH UPPER_CASE_CH NUMBERS_CH
@@ -38,6 +39,13 @@ bool Assembly_HasLabel(const char* line)
     return false;
 }
 
+
+
+#define EXTERN_COMMAND_STR (".extern")
+bool Assembly_IsExtern(const char* line)
+{
+    return String_Compare(line,EXTERN_COMMAND_STR,String_Len(EXTERN_COMMAND_STR)) == 0;
+}
 
 
 bool Assembler_IsAssemblyFile(const char* fileName)
@@ -99,10 +107,12 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
         while(!String_IsLetter(*commandLine) && *commandLine != '.') commandLine++;
     }
     
-    
     /*printf("%s : %s - %s\n",label,commandLine,params);*/
-    
-    if(DataHandler.IsHandler(commandLine))
+    if(EntryHandler.IsHandler(commandLine))
+    {
+        Queue_enqueue(&assembly->penndingCommands, commandLine, String_Len(commandLine) + 1);
+    }
+    else if(DataHandler.IsHandler(commandLine))
     {
         if(label)
         {
@@ -118,7 +128,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
         else
         {
             assembly->prog.data.counter += size;
-            DataHandler.Add(commandLine,&assembly->prog.data.bytes,assembly->prog.symbols);
+            DataHandler.Add(commandLine,&assembly->prog.data.bytes,&assembly->prog.symbols);
         }
 
     }
@@ -162,16 +172,20 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     String_SimplfyLine(line);
 
     /*should always be true*/
-    if(CommandHandler.IsHandler(commandLine))
+    if(EntryHandler.IsHandler(commandLine))
     {
-        CommandHandler.Add(commandLine,&prog->code.bytes,prog->symbols);
+        EntryHandler.Add(commandLine,&prog->code.bytes,&prog->symbols);
+    }
+    else if(CommandHandler.IsHandler(commandLine))
+    {
+        CommandHandler.Add(commandLine,&prog->code.bytes,&prog->symbols);
     }
 }
 
 void PrintSymbol(const void* data,size_t len, void* context)
 {
     const Symbol* symbol = data;
-    printf("%s : %lu ---- %s\n",symbol->name, symbol->address, symbol->type?"Private":"Public");
+    printf("%s : %lu ---- %s\n",symbol->name, symbol->address, symbol->type?"Public":"Private");
 }
 
 void PrintByte(const void* data,size_t len, void* context)
@@ -217,6 +231,10 @@ bool Assembler_AssembleFile(char* asmFile)
     printf("********** CODE **************\n");
     /*printf("%lu %p\n",List_Len(assembly.prog.code.bytes),&prog->code.bytes);*/
     List_ForEach(assembly.prog.code.bytes,&PrintBitsIter,NULL);
+
+    printf("*********** SYMBOLS************\n");
+    List_ForEach(assembly.prog.symbols, &PrintSymbol, NULL);
+    
 
     /*close the file*/
     if(!File_Close(file))

@@ -48,7 +48,7 @@ bool DataUtils_IsCommand(const char* commandStr,const char* command)
 }
 
 
-bool StringCommandHandler_Add(const char* line, List* bytes,List symbols)
+bool StringCommandHandler_Add(const char* line, List* bytes,List* symbols)
 {
     Byte byte;
     const char* params = DataUtils_GetParams(line);
@@ -131,7 +131,7 @@ size_t MatCommandHandler_CalculateSize(const char* matStr)
     return size;
 }
 
-bool MatCommandHandler_Add(const char* line,List* bytes,List symbols)
+bool MatCommandHandler_Add(const char* line,List* bytes,List* symbols)
 {
     Byte byte;
     const char* param = DataUtils_GetParams(line);
@@ -267,7 +267,7 @@ size_t DataCommandHandler_GetSize(const char* line)
     return size;
 }
 
-bool DataCommandHandler_Add(const char* line,List* bytes, List symbols)
+bool DataCommandHandler_Add(const char* line,List* bytes, List* symbols)
 {
     Byte byte;
     const char* params = DataUtils_GetParams(line);

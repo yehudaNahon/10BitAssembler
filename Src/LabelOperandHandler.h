@@ -5,7 +5,7 @@
 
 bool IsLabel(const char* label);
 
-bool AddLabel(char* label,List* bytes,List symbols);
+bool AddLabel(char* label,List* bytes,List* symbols);
 
 size_t SizeLabel();
 

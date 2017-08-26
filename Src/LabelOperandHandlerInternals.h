@@ -10,7 +10,7 @@ bool LabelOperandHandler_IsHandler(const char* param);
 
 size_t LabelOperandHandler_GetSize(const char* param);
 
-bool LabelOperandHandler_Add(const char* operand,List* bytes,List symbols);
+bool LabelOperandHandler_Add(const char* operand,List* bytes,List* symbols);
 
 
 

@@ -28,8 +28,8 @@ typedef struct OperandByte
 typedef struct RegOperandByte
 {
     int type : TYPE_BITS_NUM;
-    int src : REG_OPERAND_BITS_NUM;
     int dst : REG_OPERAND_BITS_NUM;
+    int src : REG_OPERAND_BITS_NUM;
 }RegOperandByte;
 
 Byte RegOperandByte_Init(int src,int dst);
@@ -40,11 +40,11 @@ EOperandType Operand_GetType(char* param);
 
 size_t Operand_GetSize(EOperandType operand);
 
-bool Operand_Add(char* operandStr, List* bytes, List symbols);
+bool Operand_Add(char* operandStr, List* bytes, List* symbols);
 
 size_t Operand_GetOperandsSize(EOperandType first,EOperandType second);
 
-bool Operand_AddOperands(char* first,char* second,List* bytes,List symbols);
+bool Operand_AddOperands(char* first,char* second,List* bytes,List* symbols);
 
 char* Operand_SplitOperands(char* operands);
 

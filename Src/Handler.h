@@ -12,7 +12,7 @@ typedef struct Handler
 {
     bool (*IsHandler) (const char* line);
     size_t (*GetSize) (const char* line);
-    bool (*Add) (const char* line,List* bytes,List symbols);
+    bool (*Add) (const char* line,List* bytes,List* symbols);
 }Handler;
 
 bool Handler_HasHandler(const char* command,Handler handlers[], size_t numOfElements);

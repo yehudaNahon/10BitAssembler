@@ -6,7 +6,7 @@
 #include "Operand.h"
 
 
-bool CommandHandler_Add(const char* command,List* byte,List symbols);
+bool CommandHandler_Add(const char* command,List* byte,List* symbols);
 
 size_t CommandHandler_GetSize(const char* command);
 

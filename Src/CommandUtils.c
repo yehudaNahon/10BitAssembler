@@ -82,30 +82,33 @@ bool CommandUtils_AddCommandByte(const char* command,const char* operands,const 
         return false;
     }
     
-    String_Copy(buffer,operands,sizeof(buffer));
-
-    dst = Operand_SplitOperands(buffer);
-
-    if(src)
+    if(operands)
     {
-        srcType = Operand_GetType(src);
-        if(srcType == eInvalid)
+        String_Copy(buffer,operands,sizeof(buffer));
+    
+        dst = Operand_SplitOperands(buffer);
+    
+        if(src)
         {
-            Log(eError,"recived a wrong source operand : %s",src);
-            return false;
+            srcType = Operand_GetType(src);
+            if(srcType == eInvalid)
+            {
+                Log(eError,"recived a wrong source operand : %s",src);
+                return false;
+            }
+        }
+    
+        if(dst)
+        {
+            dstType = Operand_GetType(dst);
+            if(dstType == eInvalid)
+            {
+                Log(eError,"recived a wrong destination operand : %s",dst);
+                return false;
+            }
         }
     }
-
-    if(dst)
-    {
-        dstType = Operand_GetType(dst);
-        if(dstType == eInvalid)
-        {
-            Log(eError,"recived a wrong destination operand : %s",dst);
-            return false;
-        }
-    }
-
+    printf("opcode : %d src : %d dst : %d\n",opcode,srcType,dstType);
     Byte byte = CommandByte_Init(opcode, srcType,dstType);
     if(!Byte_Add(byte,bytes))
     {

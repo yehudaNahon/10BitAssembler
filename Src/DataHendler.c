@@ -38,7 +38,7 @@ size_t DataHandler_GetSize(const char* data)
     return ptr->GetSize(data);
 }
 
-bool DataHandler_Add(const char* data, List* bytes,List symbols)
+bool DataHandler_Add(const char* data, List* bytes,List* symbols)
 {
     GetHandlers();
  

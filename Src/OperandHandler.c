@@ -7,8 +7,7 @@
 #include "ImmediateOperandHandler.h"
 #include "String.h"
 #include "Operand.h"
-
-#define GetHandlers() Handler handlers[] = {MatOperandHandler,RegOperandHandler,LabelOperandHandler,ImmediateOperandHandler}
+#include <stdio.h>
 
 Handler OperandsHandler = {
     &OperandHandler_IsHandler,    
@@ -44,15 +43,20 @@ size_t OperandHandler_GetSize(const char* commandStr)
 }
 
 
-bool OperandHandler_Add(const char* commandStr, List* bytes, List symbols)
+bool OperandHandler_Add(const char* commandStr, List* bytes, List* symbols)
 {
     char buffer[MAX_LINE_LEN];
     char* first = buffer;
     char* second;
+    if(!commandStr)
+    {
+        return false;
+    }
+
     String_Copy(buffer,commandStr,sizeof(buffer));
 
     second = Operand_SplitOperands(first);
-
+    
     return Operand_AddOperands(first,second,bytes,symbols);
 }
 

@@ -3,7 +3,7 @@
 #include "ImmediateOperandHandlerInternals.h"
 #include "String.h"
 #include "Operand.h"
-
+#include <stdio.h>
 
 int Immediate_GetValue(const char* immediateStr)
 {
@@ -20,7 +20,6 @@ bool IsImmediate(const char* param)
     {
         return false;
     }
-
     return true;
 }
 
@@ -32,12 +31,11 @@ size_t SizeImmediate()
 bool AddImmediate(const char* operand,List* bytes)
 {
     Byte byte;
-    if(!operand || !bytes || IsImmediate(operand))
+    if(!operand || !bytes || !IsImmediate(operand))
     {
         return false;
     }
-
-    byte = OperandByte_Init(eImmediate,Convert_StrToDecimal(&operand[1]));
+    byte = OperandByte_Init(eAbsolute,Convert_StrToDecimal(&operand[1]));
     return Byte_Add(byte,bytes);
 }
 

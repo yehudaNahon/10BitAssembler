@@ -1,6 +1,7 @@
 #include "Memory.h"
 #include "BitArray.h"
 #include <stdio.h>
+#include "Byte.h"
 
 #define SetBit(A,k)     ( A[(k/32)] |= (1 << (k%32)) )
 #define ClearBit(A,k)   ( A[(k/32)] &= ~(1 << (k%32)) )

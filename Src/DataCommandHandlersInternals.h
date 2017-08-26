@@ -31,7 +31,7 @@ char* DataUtils_GetParams(const char* line);
 
 bool DataUtils_IsCommand(const char* line,const char* command);
 
-bool StringCommandHandler_Add(const char* params, List* bytes,List symbols);
+bool StringCommandHandler_Add(const char* params, List* bytes,List* symbols);
 
 bool StringCommandHandler_IsHandler(const char* command);
 
@@ -39,7 +39,7 @@ size_t StringCommandHandler_GetSize(const char* params);
 
 size_t MatCommandHandler_CalculateSize(const char* matStr);
 
-bool MatCommandHandler_Add(const char* params,List* bytes,List symbols);
+bool MatCommandHandler_Add(const char* params,List* bytes,List* symbols);
 
 bool MatCommandHandler_IsHandler(const char* command);
 
@@ -49,7 +49,7 @@ bool DataCommandHandler_IsHandler(const char* command);
 
 size_t DataCommandHandler_GetSize(const char* params);
 
-bool DataCommandHandler_Add(const char* params,List* bytes, List symbols);
+bool DataCommandHandler_Add(const char* params,List* bytes, List* symbols);
 
 
 

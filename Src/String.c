@@ -161,7 +161,7 @@ bool String_IsNumber(const char* numStr)
             return false;
         }
     }
-
+    
     return true;
 }
 

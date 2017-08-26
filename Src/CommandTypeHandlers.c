@@ -39,7 +39,7 @@ const CommandOpcodes NoOperand_Opcodes[] = {
     {"stop",15},
 }; 
 
-bool NoOperandHandler_Add(const char* commandStr,List* bytes,List symbols)
+bool NoOperandHandler_Add(const char* commandStr,List* bytes,List* symbols)
 {
     if(!commandStr || !bytes)
     {
@@ -81,7 +81,7 @@ const CommandOpcodes SingleOperand_Opcodes[] = {
     {"jsr",13},
 };
 
-bool SingleOperandHandler_Add(const char* commandStr,List* bytes,List symbols)
+bool SingleOperandHandler_Add(const char* commandStr,List* bytes,List* symbols)
 {
     char operand[MAX_OPERAND_STR_LEN];
     
@@ -139,7 +139,7 @@ const CommandOpcodes TwoOperands_Opcodes[] = {
 };
 
 
-bool TwoOperandsHandler_Add(const char* commandStr,List* bytes,List symbols)
+bool TwoOperandsHandler_Add(const char* commandStr,List* bytes,List* symbols)
 {
     char operands[MAX_OPERAND_STR_LEN];
     
@@ -154,21 +154,20 @@ bool TwoOperandsHandler_Add(const char* commandStr,List* bytes,List symbols)
         Log(eError,"did not recieved any operands : %s", commandStr);
         return 0;
     }
-
+    
     if(!CommandUtils_AddCommandByte(commandStr,operands,TwoOperands_Opcodes,NUM_OF_ELEM(TwoOperands_Opcodes),bytes))
     {
         Log(eError, "Failed Adding command to the memory table : %s",commandStr);
         return false;
     }
     
-
+    
     if(!OperandsHandler.Add(operands,bytes,symbols))
     {
         Log(eError, "Failed Adding operand to list : %s",operands);
         return false;
     }
-
-
+    
     return true;
 }
 

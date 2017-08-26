@@ -19,7 +19,7 @@ Handler CommandHandler = {
 
 
 
-bool CommandHandler_Add(const char* command,List* byte,List symbols)
+bool CommandHandler_Add(const char* command,List* byte,List* symbols)
 {
     GetHandlers();
     

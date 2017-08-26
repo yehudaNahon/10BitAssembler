@@ -94,7 +94,7 @@ size_t Operand_GetOperandsSize(EOperandType first,EOperandType second)
     return Operand_GetSize(first) + Operand_GetSize(second);
 }
 
-bool Operand_AddOperands(char* first,char* second,List* bytes,List symbols)
+bool Operand_AddOperands(char* first,char* second,List* bytes,List* symbols)
 {
     EOperandType firstType,secondType;
     Byte byte,indexByte;
@@ -102,52 +102,54 @@ bool Operand_AddOperands(char* first,char* second,List* bytes,List symbols)
     firstType = Operand_GetType(first);
     secondType = Operand_GetType(second);
 
+    
     if(firstType == eRegister && secondType == eRegister)
     {
         return AddRegs(first,second,bytes);
     }
-
+    
+    
     if(first)
     {
         switch (firstType)
         {
             case eImmediate:
-                answer = AddImmediate(first,bytes);
-                break;
+            answer = AddImmediate(first,bytes);
+            break;
             case eLabel:
-                answer = AddLabel(first,bytes,symbols);
-                break;
+            answer = AddLabel(first,bytes,symbols);
+            break;
             case eMatAccess:
-                answer = AddMat(first,bytes,symbols);
-                break;
+            answer = AddMat(first,bytes,symbols);
+            break;
             case eRegister:    
-                answer = AddRegs(first,0,bytes);
-                break;
+            answer = AddRegs(first,0,bytes);
+            break;
             case eInvalid:
-                return false;
+            return false;
         }
     }
-
+    
     if(second)
     {
         switch (secondType)
         {
             case eImmediate:
-                answer &= AddImmediate(second,bytes);
-                break;
+            answer &= AddImmediate(second,bytes);
+            break;
             case eLabel:
-                answer &= AddLabel(second,bytes,symbols);
-                break;
+            answer &= AddLabel(second,bytes,symbols);
+            break;
             case eMatAccess:
-                answer &= AddMat(second,bytes,symbols);
-                break;
+            answer &= AddMat(second,bytes,symbols);
+            break;
             case eRegister:
-                answer &= AddRegs(0,second,bytes);
-                break;
+            answer &= AddRegs(0,second,bytes);
+            break;
             case eInvalid:
-                return false;
+            return false;
         }
     }
-
+    
     return answer;
 }

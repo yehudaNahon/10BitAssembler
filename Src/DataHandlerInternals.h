@@ -9,7 +9,7 @@ bool DataHandler_IsHandler(const char* data);
 
 size_t DataHandler_GetSize(const char* data);
 
-bool DataHandler_Add(const char* data, List* bytes,List symbols);
+bool DataHandler_Add(const char* data, List* bytes,List* symbols);
 
 
 

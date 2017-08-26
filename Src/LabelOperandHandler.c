@@ -5,7 +5,8 @@
 #include "Symbol.h"
 #include "Operand.h"
 #include "CommandHandler.h"
-
+#include <stdio.h>
+#include "BitArray.h"
 
 int Label_GetValue(char* labelStr,List symbols)
 {
@@ -48,7 +49,7 @@ bool IsLabel(const char* param)
     return true;
 }
 
-bool AddLabel(char* operand,List* bytes,List symbols)
+bool AddLabel(char* operand,List* bytes,List* symbols)
 {
     Byte byte;
     Symbol* ptr = NULL;    
@@ -58,7 +59,7 @@ bool AddLabel(char* operand,List* bytes,List symbols)
         Log(eError, "Reiceived a none label operand : %s",operand);
         return false;
     }
-    if(List_FindData(symbols,(void**)&ptr,&Symbol_Finder,operand) == 0)
+    if(List_FindData(*symbols,(void**)&ptr,&Symbol_Finder,operand) == 0)
     {
         return false;
     }
@@ -67,8 +68,7 @@ bool AddLabel(char* operand,List* bytes,List symbols)
     {    
         return false;
     }
-    
-    byte = OperandByte_Init(eLabel,ptr->address);
+    byte = OperandByte_Init(eRelocatable,ptr->address);
     return Byte_Add(byte,bytes);
 }
 
