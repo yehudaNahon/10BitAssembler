@@ -8,7 +8,7 @@
 #include "String.h"
 #include "GeneralMacros.h"
 #include "Log.h"
-
+#include <stdio.h>
 
 
 
@@ -65,6 +65,7 @@ size_t NoOperandHandler_GetSize(const char* commandStr)
 
 bool NoOperandHandler_IsHandler(const char* commandStr)
 {
+    /*printf("in is handlers : %s\n",commandStr);*/
     return CommandUtils_IsHandler(commandStr,NoOperand_Opcodes,NUM_OF_ELEM(NoOperand_Opcodes));
 }
 
@@ -96,7 +97,7 @@ bool SingleOperandHandler_Add(const char* commandStr,List* bytes,List symbols)
         return 0;
     }
     
-    if(!CommandUtils_AddCommandByte(commandStr,operand,NULL,NoOperand_Opcodes,NUM_OF_ELEM(NoOperand_Opcodes),bytes))
+    if(!CommandUtils_AddCommandByte(commandStr,operand,NULL,SingleOperand_Opcodes,NUM_OF_ELEM(SingleOperand_Opcodes),bytes))
     {
         Log(eError, "Failed Adding command to the memory table : %s",commandStr);
         return false;
@@ -148,36 +149,36 @@ bool TwoOperandsHandler_Add(const char* commandStr,List* bytes,List symbols)
         Log(eError, "TwoOperandsHandler_Add :: recieved a null pointer");
         return false;
     }
-
+    
     if(!CommandUtils_GetOperands(commandStr,operand,MAX_OPERAND_STR_LEN))
     {
         Log(eError,"did not recieved any operands : %s", commandStr);
         return 0;
     }
-    
-    if(!CommandUtils_AddCommandByte(commandStr,operand,secondOperand,NoOperand_Opcodes,NUM_OF_ELEM(NoOperand_Opcodes),bytes))
-    {
-        Log(eError, "Failed Adding command to the memory table : %s",commandStr);
-        return false;
-    }
-    
     secondOperand = CommandUtils_SplitOperands(operand,MAX_OPERAND_STR_LEN);
     if(!secondOperand)
     {
         Log(eError, "Recieved only 1 operand in a 2 operand command : %s", commandStr);
         return false;
     }
+    
+    if(!CommandUtils_AddCommandByte(commandStr,operand,secondOperand,TwoOperands_Opcodes,NUM_OF_ELEM(TwoOperands_Opcodes),bytes))
+    {
+        Log(eError, "Failed Adding command to the memory table : %s",commandStr);
+        return false;
+    }
+    
 
     if(!OperandHandler.Add(operand,bytes,symbols))
     {
-        Log(eError, "Failed Adding operand to list");
+        Log(eError, "Failed Adding operand to list : %s",operand);
         return false;
     }
 
 
     if(!OperandHandler.Add(secondOperand,bytes,symbols))
     {
-        Log(eError, "Failed Adding operand to list");
+        Log(eError, "Failed Adding operand to list : %s",secondOperand);
         return false;
     }
 
@@ -211,7 +212,7 @@ size_t TwoOperandsHandler_GetSize(const char* commandStr)
 
 bool TwoOperandsHandler_IsHandler(const char* commandStr)
 {
-    return CommandUtils_IsHandler(commandStr,SingleOperand_Opcodes,NUM_OF_ELEM(SingleOperand_Opcodes));
+    return CommandUtils_IsHandler(commandStr,TwoOperands_Opcodes,NUM_OF_ELEM(TwoOperands_Opcodes));
 }
 
 

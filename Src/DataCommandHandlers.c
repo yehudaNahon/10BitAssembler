@@ -54,7 +54,6 @@ bool StringCommandHandler_Add(const char* line, List* bytes,List symbols)
     const char* ptr = NULL;
     size_t size = 0;
 
-    printf("in string add\n");
     /* validaty check*/
     if(!params || params[0] != STR_OPEN || params[String_Len(params) - 1] != STR_CLOSE)
     {

@@ -93,9 +93,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     {
         commandLine = String_SplitToTwo(line, LABEL_INDICATOR);
         label = line;
-        printf("before : %s\n",commandLine);
         String_SimplfyLine(commandLine);
-        printf("after : %s\n",commandLine);
         String_SimplfyLine(label);
     }
     
@@ -143,8 +141,6 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     /* clean the line from tabs and stuff*/
     String_SimplfyLine(line);
 
-    params = String_SplitToTwo(commandLine, SPACE_CH);
-    
     /*should always be true*/
     if(CommandHandler.IsHandler(commandLine))
     {
@@ -186,8 +182,6 @@ bool Assembler_AssembleFile(char* asmFile)
     /* create symbol table*/
     File_ForEach(file, &Assembler_CreateSymbols,&assembly);
 
-    printf("asfdasdffeedf\n");
-
     printf("******** PENNDING COMMANDS ********\n");
     Queue_ForEach(assembly.penndingCommands,&PrintLine,NULL);
 
@@ -201,7 +195,7 @@ bool Assembler_AssembleFile(char* asmFile)
     
     printf("********** CODE **************\n");
     /*printf("%lu %p\n",List_Len(assembly.prog.code.bytes),&prog->code.bytes);*/
-    /*List_ForEach(assembly.prog.code.bytes,&PrintCommandByteIter,NULL);*/
+    List_ForEach(assembly.prog.code.bytes,&PrintByte,NULL);
     
     /*close the file*/
     if(!File_Close(file))

@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 #include "CommandUtils.h"
 #include "Memory.h"
 #include "GeneralMacros.h"
@@ -57,7 +57,7 @@ int CommandUtils_GetOpcode(const char* command,const CommandOpcodes opcodeList[]
     
     for(i=0; i < len; i++)
     {
-        if(String_Compare(opcodeList[i].commandStr,command,String_Len(opcodeList[i].commandStr)) == 0)
+        if(String_Compare(command,opcodeList[i].commandStr,String_Len(opcodeList[i].commandStr)) == 0)
         {
             return opcodeList[i].opcode;
         }
@@ -68,7 +68,7 @@ int CommandUtils_GetOpcode(const char* command,const CommandOpcodes opcodeList[]
 
 bool CommandUtils_AddCommandByte(const char* command,char* src,char* dst,const CommandOpcodes* opcodes, size_t len,List* bytes)
 {
-    int opcode;
+    int opcode = 0;
     EOperandType srcType = 0;
     EOperandType dstType = 0;
     
@@ -78,7 +78,7 @@ bool CommandUtils_AddCommandByte(const char* command,char* src,char* dst,const C
         Log(eError, "Recieved wrong command : %s",command);
         return false;
     }
-
+    
     if(src)
     {
         srcType = Operand_GetType(src);
@@ -100,25 +100,17 @@ bool CommandUtils_AddCommandByte(const char* command,char* src,char* dst,const C
     }
 
     CommandByte byte = CommandByte_Init(opcode, srcType,dstType);
-    
     if(!List_Add(bytes, &byte, sizeof(CommandByte)))
     {
-        Log(eError, "Failed adding element to list");
+        Log(eError, "Failed adding element to list : %s",command);
         return false;
     }
-
+    
     return true;
 }
 
 
-bool CommandUtils_IsHandler(const char* commandStr,const CommandOpcodes opcodeList[],size_t len)
+bool CommandUtils_IsHandler(const char* command,const CommandOpcodes opcodeList[],size_t len)
 {
-    char command[MAX_COMMAND_STR_LEN];
-
-    if(!CommandUtils_GetCommand(commandStr, command, MAX_COMMAND_STR_LEN))
-    {
-        return false;
-    }
-
     return CommandUtils_GetOpcode(command, opcodeList, len) != -1;
 }
