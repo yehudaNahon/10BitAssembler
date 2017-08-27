@@ -290,6 +290,7 @@ bool Assembler_AssembleFile(char* baseFileName)
     assembly.prog.code.counter = 100;
 
     /* create symbol table*/
+    Log(eInfo,"Assembling file...");
     File_ForEach(file, &Assembler_CreateSymbolsIter,&assembly);
 
     /*close the file*/
@@ -300,32 +301,48 @@ bool Assembler_AssembleFile(char* baseFileName)
     }
 
     /*update symbol table datas base address*/
+    Log(eInfo,"Mapping object files memory map...\n");
     List_ForEach(assembly.prog.symbols,&Symbol_UpdateDataSymbolAddressIter,&assembly.prog.code.counter);
     
     /*create command byte list*/
+    Log(eInfo,"Parsing command instructions...");
     Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly.prog);
 
-    /*create entry file*/
-    File_CreateName(baseFileName,ENTRY_END,fileName,sizeof(fileName));
-    if(!WriteEntryFile(fileName,&assembly.prog.symbols))
-    {
-        Log(eError,"Couldnt create entry file :: %s",fileName);
-        return false;
-    }
 
-    /*create extern file*/
-    File_CreateName(baseFileName,EXTERN_END,fileName,sizeof(fileName));
-    if(!WriteExternFile(fileName,&assembly.prog.code.bytes,&assembly.prog.symbols,100))
+    if(assembly.prog.errorCount == 0)
     {
-        Log(eError,"Couldnt create extern file :: %s",fileName);
-        return false;
+        /*create entry file*/
+        File_CreateName(baseFileName,ENTRY_END,fileName,sizeof(fileName));
+        Log(eInfo,"Creating Entry file :: %s",fileName);
+        if(!WriteEntryFile(fileName,&assembly.prog.symbols))
+        {
+            Log(eError,"Couldnt create entry file :: %s",fileName);
+            return false;
+        }
+    
+        /*create extern file*/
+        File_CreateName(baseFileName,EXTERN_END,fileName,sizeof(fileName));
+        Log(eInfo,"Creating Extern file :: %s",fileName);
+        if(!WriteExternFile(fileName,&assembly.prog.code.bytes,&assembly.prog.symbols,100))
+        {
+            Log(eError,"Couldnt create extern file :: %s",fileName);
+            return false;
+        }
+    
+        /*create object file*/
+        File_CreateName(baseFileName,OBJECT_END,fileName,sizeof(fileName));
+        Log(eInfo,"Creating Object file :: %s",fileName);
+        if(!WriteObjectFile(fileName,&assembly.prog.code.bytes,&assembly.prog.data.bytes,100))
+        {
+            Log(eError,"Couldnt create object file :: %s",fileName);
+            return false;
+        }
+        
+        Log(eInfo,"Successfully assembled file");
     }
-
-    /*create object file*/
-    File_CreateName(baseFileName,OBJECT_END,fileName,sizeof(fileName));
-    if(!WriteObjectFile(fileName,&assembly.prog.code.bytes,&assembly.prog.data.bytes,100))
+    else
     {
-        Log(eError,"Couldnt create object file :: %s",fileName);
+        Log(eError,"Failed in file assembly with %d Errors",assembly.prog.errorCount);
         return false;
     }
 

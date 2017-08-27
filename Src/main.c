@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
 	/* asemble all the arrays files*/
 	for(i=0; i< fileCount; i++)
 	{
+		Log(eInfo,"Assembling file :: %s%s\n",files[i],ASSEMBLY_END);
 		Assembler_AssembleFile(files[i]);
 	}
 
