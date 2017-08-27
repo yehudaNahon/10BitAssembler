@@ -119,7 +119,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     {
         if(label)
         {
-            symbol = Symbol_Init(label,assembly->prog.data.counter);
+            symbol = Symbol_Init(label,assembly->prog.data.counter,eDataSymbol);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));
         }
         size = DataHandler.GetSize(commandLine);
@@ -139,7 +139,7 @@ void Assembler_CreateSymbols(const void* data, size_t len, void* context)
     {
         if(label)
         {
-            symbol = Symbol_Init(label,assembly->prog.code.counter);
+            symbol = Symbol_Init(label,assembly->prog.code.counter,eCommandSymbol);
             List_Add(&assembly->prog.symbols, &symbol, sizeof(Symbol));    
         }
         size = CommandHandler.GetSize(commandLine);
@@ -185,11 +185,7 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     }
 }
 
-void PrintSymbol(const void* data,size_t len, void* context)
-{
-    const Symbol* symbol = data;
-    printf("%s : %lu ---- %s\n",symbol->name, symbol->address, symbol->type?"Public":"Private");
-}
+
 
 void PrintByte(const void* data,size_t len, void* context)
 {
@@ -227,7 +223,7 @@ bool Assembler_AssembleFile(char* asmFile)
     List_ForEach(assembly.prog.data.bytes, &PrintBitsIter, NULL);
 
     printf("*********** SYMBOLS************\n");
-    List_ForEach(assembly.prog.symbols, &PrintSymbol, NULL);
+    List_ForEach(assembly.prog.symbols, &Symbol_Print, NULL);
     printf("\n\n");    
     Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly.prog);
     printf("\n\n");
@@ -236,7 +232,7 @@ bool Assembler_AssembleFile(char* asmFile)
     List_ForEach(assembly.prog.code.bytes,&PrintBitsIter,NULL);
 
     printf("*********** SYMBOLS************\n");
-    List_ForEach(assembly.prog.symbols, &PrintSymbol, NULL);
+    List_ForEach(assembly.prog.symbols, &Symbol_Print, NULL);
     
 
     /*close the file*/

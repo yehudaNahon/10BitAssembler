@@ -69,7 +69,7 @@ bool AddLabel(char* operand,List* bytes,List* symbols)
         return false;
     }
 
-    byte = OperandByte_Init(ptr->address == 0 ? eExternal : eRelocatable,ptr->address);
+    byte = OperandByte_Init(ptr->dataType == eExternalSymbol ? eExternal : eRelocatable,ptr->address);
     return Byte_Add(byte,bytes);
 }
 

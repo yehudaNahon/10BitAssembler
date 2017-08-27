@@ -9,9 +9,10 @@ void Symbol_Clean(Symbol* symbol)
     Memory_Set((void*)symbol->name, 0, sizeof(symbol->name));
     symbol->address = 0;
     symbol->type = ePrivate;
+    symbol->dataType = eDataSymbol;
 }
 
-Symbol Symbol_Init(char* name, size_t address)
+Symbol Symbol_Init(char* name, size_t address,ESymbolDataType dataType)
 {
     Symbol symbol;
     
@@ -23,13 +24,13 @@ Symbol Symbol_Init(char* name, size_t address)
     }
     symbol.address = address;
     symbol.type = ePrivate;
-
+    symbol.dataType = dataType;
     return symbol;
 }
 
 Symbol Symbol_Copy(Symbol* other)
 {
-    Symbol symbol = Symbol_Init(other->name, other->address);
+    Symbol symbol = Symbol_Init(other->name, other->address,other->dataType);
 
     Symbol_ChangeType(&symbol,other->type);
 
@@ -57,4 +58,12 @@ bool Symbol_Finder(void* symbolPtr, size_t index, void* name)
     }
 
     return false;
+}
+
+void Symbol_Print(const void* data,size_t len, void* context)
+{
+    const Symbol* symbol = data;
+    printf("%s : %lu ---- %s :: %s\n",
+        symbol->name, symbol->address, symbol->type?"Public":"Private", 
+        symbol->dataType == eDataSymbol ? "Data" :(symbol->dataType == eCommandSymbol ? "Command" : "External"));
 }

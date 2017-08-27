@@ -39,7 +39,7 @@ bool ExternHandler_Add(const char* line,List* bytes,List* symbols)
     
     do
     {
-        symbol = Symbol_Init(symbolStr,0); 
+        symbol = Symbol_Init(symbolStr,0,eExternalSymbol); 
         List_Add(symbols,&symbol,sizeof(symbol));
     }while(!(symbolStr = String_Split(buffer,COMMA_STR)));
 
