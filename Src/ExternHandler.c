@@ -3,6 +3,7 @@
 #include "String.h"
 #include "Log.h"
 
+int counter = 0;
 
 #define EXTERN_COMMAND_STR (".extern")
 bool ExternHandler_ISHandler(const char* line)
@@ -39,7 +40,8 @@ bool ExternHandler_Add(const char* line,List* bytes,List* symbols)
     
     do
     {
-        symbol = Symbol_Init(symbolStr,0,eExternalSymbol); 
+        symbol = Symbol_Init(symbolStr,counter,eExternalSymbol); 
+        counter++;
         List_Add(symbols,&symbol,sizeof(symbol));
     }while(!(symbolStr = String_Split(buffer,COMMA_STR)));
 

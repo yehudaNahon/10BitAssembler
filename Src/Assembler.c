@@ -17,6 +17,8 @@
 #include "CommandByte.h"
 #include "EntryHandler.h"
 #include "ExternHandler.h"
+#include "Convert.h"
+#include "Operand.h"
 
 #define LABEL_INDICATOR (':')
 #define LIGAL_LABEL_CH LETTERS_CH UPPER_CASE_CH NUMBERS_CH
@@ -185,6 +187,66 @@ void Assembler_ParseCommands(const void* data, size_t len, void* context)
     }
 }
 
+void Assembler_WriteEnteriesToFile(const void* data,size_t len,void* context)
+{
+    char buffer[MAX_LINE_LEN];
+    const Symbol* symbol = (Symbol*)data;
+    FILE* file = context;
+    if(!symbol || !file)
+    {
+        return;
+    }
+
+    Memory_Set(buffer,0,sizeof(buffer));
+
+    String_Append(buffer,symbol->name,MAX_SYMBOL_NAME_LEN);
+    String_Append(buffer,SPACE_STR,sizeof(SPACE_STR));
+    Convert_DecimalToBase4Str(symbol->address,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer));
+
+    if(!File_WriteLine(file,buffer))
+    {
+        Log(eError,"Failed Writing to file :: %s",buffer);
+    }
+}
+
+List* pubSymbols = NULL;
+int CommandCounter = 0;
+void Assembler_WriteExternsToFile(const void* data,size_t len,void* context)
+{
+    char buffer[MAX_LINE_LEN];
+    Symbol* symbol = NULL;
+    int address = 0;
+    OperandByte* byte = (OperandByte*)data;
+    FILE* file = context;
+    
+    CommandCounter++;
+    
+    if(!pubSymbols || !byte || !file || byte->type != eExternal)
+    {
+        return;
+    }
+
+    address = byte->value;
+    List_FindData(*pubSymbols,(void**)&symbol,&Symbol_ExternFinder,(void*)&address);
+    if(!symbol)
+    {
+        Log(eError,"did not find extern symbol from commands");
+        return;
+    }
+    
+    Memory_Set(buffer,0,sizeof(buffer));
+
+    String_Append(buffer,symbol->name,MAX_SYMBOL_NAME_LEN);
+    String_Append(buffer,SPACE_STR,sizeof(SPACE_STR));
+    Convert_DecimalToBase4Str(CommandCounter,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer));
+
+    byte->value = 0;
+
+    if(!File_WriteLine(file,buffer))
+    {
+        Log(eError,"Failed Writing to file :: %s",buffer);
+    }
+}
 
 
 void PrintByte(const void* data,size_t len, void* context)
@@ -199,12 +261,38 @@ void PrintLine(const void* data, size_t len, void* context)
 }
 
 
-bool Assembler_AssembleFile(char* asmFile)
+bool Assembler_WriteToFile(char* entryFileName,List iteratOver,Iterator iter)
 {
-    Assembly assembly = Assembly_Init(asmFile);
-    Programme* prog = &assembly.prog;
     /*open the file*/
-    FILE* file = File_Open(asmFile, "r");
+    FILE* file = File_Open(entryFileName, "w+");
+    
+    if(!file)
+    {
+        Log(eError,"Could not open file");
+        return false;
+    }
+
+    List_ForEach(iteratOver,iter,file);
+
+    /*close the file*/
+    if(!File_Close(file))
+    {
+        Log(eError, "Could not close file");
+        return false;
+    }    
+}
+
+
+bool Assembler_AssembleFile(char* baseFileName)
+{
+    char fileName[MAX_FILE_NAME];
+    Assembly assembly = Assembly_Init(baseFileName);
+    Programme* prog = &assembly.prog;
+
+    File_CreateName(baseFileName,ASSEMBLY_END,fileName,sizeof(fileName));
+    
+    /*open the file*/
+    FILE* file = File_Open(fileName, "r");
 
     if(!file)
     {
@@ -234,13 +322,20 @@ bool Assembler_AssembleFile(char* asmFile)
     printf("*********** SYMBOLS************\n");
     List_ForEach(assembly.prog.symbols, &Symbol_Print, NULL);
     
-
     /*close the file*/
     if(!File_Close(file))
     {
         Log(eError, "Could not close file");
         return false;
     }
+
+    File_CreateName(baseFileName,ENTRY_END,fileName,sizeof(fileName));
+    Assembler_WriteToFile(fileName,assembly.prog.symbols,&Assembler_WriteEnteriesToFile);
+
+    CommandCounter = 99;
+    pubSymbols = &assembly.prog.symbols;
+    File_CreateName(baseFileName,EXTERN_END,fileName,sizeof(fileName));
+    Assembler_WriteToFile(fileName,assembly.prog.code.bytes,&Assembler_WriteExternsToFile);
 
     Assembly_Delete(&assembly);
 

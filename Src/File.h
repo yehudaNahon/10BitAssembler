@@ -44,7 +44,7 @@ char* File_FindDot(const char* fileName);
 */
 void File_ForEach(FILE* file,Iterator iter, void* context);
 
-
+bool File_WriteLine(FILE* file,const char* text);
 
 
 #endif

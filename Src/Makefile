@@ -14,4 +14,4 @@ $(EXEC): $(OBJECTS) ; $(CC) $(OBJECTS) -o $(EXEC)
 %.o: %.cpp ; $(CC) -c $(CC_FLAGS) $< -o $@
  
 # To remove generated files
-clean: ;rm -f $(EXEC) $(OBJECTS)
+clean: ;rm -f $(EXEC) $(OBJECTS) *.env *.ext

@@ -44,6 +44,8 @@ void Symbol_Delete(Symbol* symbol);
 
 bool Symbol_Finder(void* symbolPtr, size_t index, void* name);
 
+bool Symbol_ExternFinder(void* symbolPtr, size_t index, void* count);
+
 void Symbol_Print(const void* data,size_t len, void* context);
 
 

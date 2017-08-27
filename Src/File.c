@@ -80,3 +80,14 @@ ssize_t File_GetLine(FILE* file, char** line, size_t* len)
 	return getline(line, len, file);
 }
 
+bool File_WriteLine(FILE* file,const char* text)
+{
+	if(!file || !text)
+	{
+		return false;
+	}
+
+	fprintf(file,"%s\n",text);
+
+	return true;
+}

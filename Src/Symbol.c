@@ -3,6 +3,8 @@
 #include "String.h"
 #include "Memory.h"
 #include <stdio.h>
+#include "Convert.h"
+#include "Assembly.h"
 
 void Symbol_Clean(Symbol* symbol)
 {
@@ -60,10 +62,31 @@ bool Symbol_Finder(void* symbolPtr, size_t index, void* name)
     return false;
 }
 
+bool Symbol_ExternFinder(void* symbolPtr, size_t index, void* counter)
+{
+    Symbol* symbol = symbolPtr;
+    int* count = counter;
+    if(symbol && symbol->address == *count)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void Symbol_Print(const void* data,size_t len, void* context)
 {
+    char buffer[MAX_LINE_LEN];
     const Symbol* symbol = data;
-    printf("%s : %lu ---- %s :: %s\n",
-        symbol->name, symbol->address, symbol->type?"Public":"Private", 
+
+    Memory_Set(buffer,0,sizeof(buffer));
+    Convert_DecimalToBase4Str(symbol->address,buffer,sizeof(buffer));
+
+    printf("%s : %s ---- %s :: %s\n",
+        symbol->name,buffer, symbol->type?"Public":"Private", 
         symbol->dataType == eDataSymbol ? "Data" :(symbol->dataType == eCommandSymbol ? "Command" : "External"));
 }
+
+
+
+

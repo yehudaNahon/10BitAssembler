@@ -24,7 +24,6 @@ This is the main entry point of the programe
 int main(int argc, char* argv[])
 {
 	char* files[MAX_FILE_NAME];
-	char temp[MAX_FILE_NAME];
 	int i = 0;
 	int fileCount = 0;
 
@@ -64,9 +63,7 @@ int main(int argc, char* argv[])
 
 	for(i=0; i< fileCount; i++)
 	{
-		
-		File_CreateName(files[i],ASSEMBLY_END,temp,NAME_MAX);
-		Assembler_AssembleFile(temp);
+		Assembler_AssembleFile(files[i]);
 	}
 
 	for(i=0; i < fileCount; i++)

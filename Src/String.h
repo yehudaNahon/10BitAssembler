@@ -10,6 +10,8 @@
 #define SPACE_CH ' '
 #define COMMA_CH ','
 
+#define SPACE_STR (" ")
+
 int String_Len(const char* str);
 
 bool String_HasChar(const char* str,char ch);
