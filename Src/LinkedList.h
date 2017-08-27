@@ -29,6 +29,6 @@ void LinkedList_ForEach(LinkedList list,Iterator iter, void* context);
 
 void LinkedList_Delete(LinkedList* list ,Cleaner cleaner,void* context);
 
-
+bool LinkedList_Append(LinkedList* dst,LinkedList* src);
 
 #endif

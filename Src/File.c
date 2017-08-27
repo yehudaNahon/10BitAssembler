@@ -17,7 +17,7 @@ FILE* File_Open(const char* fileName, const char* mode)
 
 bool File_Close(FILE* file)
 {
-	return fclose(file) != EOF;
+	return fclose(file) == 0;
 }
 
 bool File_CleanName(const char* fileName, char* o_rawName, int length)
@@ -110,5 +110,6 @@ bool File_WriteToFile(char* entryFileName,List iteratOver,Iterator iter)
     {
         Log(eError, "Could not close file");
         return false;
-    }    
+	}    
+	return true;
 }

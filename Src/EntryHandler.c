@@ -81,7 +81,7 @@ void EntryHandler_WriteEnteriesToFile(const void* data,size_t len,void* context)
 
     String_Append(buffer,symbol->name,MAX_SYMBOL_NAME_LEN);
     String_Append(buffer,SPACE_STR,sizeof(SPACE_STR));
-    Convert_DecimalToBase4Str(symbol->address,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer));
+    Convert_DecimalToBase4Str(symbol->address,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer),4);
 
     if(!File_WriteLine(file,buffer))
     {

@@ -80,7 +80,7 @@ void Symbol_Print(const void* data,size_t len, void* context)
     const Symbol* symbol = data;
 
     Memory_Set(buffer,0,sizeof(buffer));
-    Convert_DecimalToBase4Str(symbol->address,buffer,sizeof(buffer));
+    Convert_DecimalToBase4Str(symbol->address,buffer,sizeof(buffer),4);
 
     printf("%s : %s ---- %s :: %s\n",
         symbol->name,buffer, symbol->type?"Public":"Private", 

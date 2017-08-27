@@ -199,12 +199,48 @@ void PrintLine(const void* data, size_t len, void* context)
     printf("%s\n",(char*) data);
 }
 
+int pubCount = 0;
+void WriteObjectIter(const void* data,size_t len,void* context)
+{
+    char buffer[MAX_LINE_LEN];
+    const int* byte = (int*)data;
+    int value;
+    FILE* file = context;
+    
+    
+    if(!byte || !file)
+    {
+        return;
+    }
+    pubCount ++;
+
+    Memory_Set(buffer,0,sizeof(buffer));
+    
+    Memory_Set(&value,0,sizeof(value));
+    Memory_Copy(&value,byte,sizeof(byte));
+
+    Convert_DecimalToBase4Str(pubCount,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer),4);
+    String_Append(buffer,SPACE_STR,sizeof(SPACE_STR));
+    Convert_DecimalToBase4Str(value,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer),5);
+
+    if(!File_WriteLine(file,buffer))
+    {
+        Log(eError,"Failed Writing to file :: %s",buffer);
+    }
+}
+
+bool WriteObjectFile(char fileName[],List* code,List* data,int baseAddress)
+{
+    pubCount = baseAddress - 1;
+    List_AddToList(code,data);
+    
+    return File_WriteToFile(fileName,*code,&WriteObjectIter);
+}
 
 bool Assembler_AssembleFile(char* baseFileName)
 {
     char fileName[MAX_FILE_NAME];
-    Assembly assembly = Assembly_Init(baseFileName);
-    Programme* prog = &assembly.prog;
+    Assembly assembly = Assembly_Init();
 
     File_CreateName(baseFileName,ASSEMBLY_END,fileName,sizeof(fileName));
     
@@ -249,12 +285,21 @@ bool Assembler_AssembleFile(char* baseFileName)
     File_CreateName(baseFileName,ENTRY_END,fileName,sizeof(fileName));
     if(!WriteEntryFile(fileName,&assembly.prog.symbols))
     {
+        Log(eError,"Couldnt create entry file :: %s",fileName);
         return false;
     }
 
     File_CreateName(baseFileName,EXTERN_END,fileName,sizeof(fileName));
-    if(WriteExternFile(fileName,&assembly.prog.code.bytes,&assembly.prog.symbols,100))
+    if(!WriteExternFile(fileName,&assembly.prog.code.bytes,&assembly.prog.symbols,100))
     {
+        Log(eError,"Couldnt create extern file :: %s",fileName);
+        return false;
+    }
+
+    File_CreateName(baseFileName,OBJECT_END,fileName,sizeof(fileName));
+    if(!WriteObjectFile(fileName,&assembly.prog.code.bytes,&assembly.prog.data.bytes,100))
+    {
+        Log(eError,"Couldnt create object file :: %s",fileName);
         return false;
     }
 

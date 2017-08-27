@@ -22,6 +22,7 @@ void List_ForEach(List list,Iterator iter, void* context);
 
 void List_Delete(List* list ,Cleaner cleaner,void* context);
 
+bool List_AddToList(List* first,List* second);
 
 
 

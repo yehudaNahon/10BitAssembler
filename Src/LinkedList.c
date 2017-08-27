@@ -228,3 +228,16 @@ void LinkedList_Delete(LinkedList* list, Cleaner cleaner,void* context)
     }
 }
 
+bool LinkedList_Append(LinkedList* dst,LinkedList* src)
+{
+    if(!dst)
+    {
+        return false;
+    }
+    
+    if(!src)
+    {
+        return true;
+    }
+    return LinkedList_Add(dst,src->data,src->length) && LinkedList_Append(dst,src->next);
+}

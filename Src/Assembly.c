@@ -21,13 +21,9 @@ void Programme_Delete(Programme* prog)
     List_Delete(&prog->symbols,NULL,NULL);
 }
 
-Assembly Assembly_Init(char* fileName)
+Assembly Assembly_Init()
 {
     Assembly assembly;
-
-    /*copy file name*/
-    Memory_Set(assembly.fileName,0,sizeof(assembly.fileName));
-    Memory_Copy(assembly.fileName, fileName, String_Len(fileName));
 
     /*create sybol table*/
     assembly.prog = Programme_Init();

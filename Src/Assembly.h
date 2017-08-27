@@ -19,7 +19,6 @@ typedef struct Programme
 
 typedef struct Assembly
 {
-    char fileName[MAX_FILE_NAME];
     Programme prog;    
     Queue penndingCommands;
 }Assembly;
@@ -27,7 +26,7 @@ typedef struct Assembly
 /*
     Initialize a new Assembly data structure
 */
-Assembly Assembly_Init(char* fileName);
+Assembly Assembly_Init();
 
 Programme Programme_Init(); 
 

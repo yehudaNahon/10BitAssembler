@@ -45,5 +45,9 @@ void List_Delete(List* list ,Cleaner cleaner,void* context)
     return LinkedList_Delete(list, cleaner, context);
 }
 
+bool List_AddToList(List* first,List* second)
+{
+    return LinkedList_Append(first,second);
+}
 
 

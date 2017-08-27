@@ -22,18 +22,13 @@ void Convert_SwapArray(char* array,size_t len)
     }
 }
 
-void Convert_DecimalToBase4Str(int num,char* buffer,size_t len)
+void Convert_DecimalToBase4Str(int num,char* buffer,size_t len,size_t numOfDigits)
 {
     char baseDigits[] = {'a', 'b', 'c', 'd'};
     int i=0;
 
-    if(num == 0)
-    {
-        buffer[0] = baseDigits[0];
-    }
-
     /* convert to the indicated base */
-    for(i = 0 ; num != 0 && i < len ; i++)
+    for(i = 0 ; i < len  && i < numOfDigits; i++)
     {
         buffer[i] = baseDigits[num % 4];
         num = num / 4;
