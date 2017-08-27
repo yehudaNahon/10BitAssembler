@@ -2,6 +2,10 @@
 #include "Assembly.h"
 #include "String.h"
 #include "Log.h"
+#include "Operand.h"
+#include "File.h"
+#include "Memory.h"
+#include "Convert.h"
 
 int counter = 0;
 
@@ -61,4 +65,51 @@ Handler ExternHandler = {
 };
 
 
+int CommandCounter = 0;
+List* pubSymbols = NULL;
+void ExternHandler_WriteExternsToFile(const void* data,size_t len,void* context)
+{
+    char buffer[MAX_LINE_LEN];
+    Symbol* symbol = NULL;
+    int address = 0;
+    OperandByte* byte = (OperandByte*)data;
+    FILE* file = context;
+    
+    CommandCounter++;
+    
+    if(!pubSymbols || !byte || !file || byte->type != eExternal)
+    {
+        return;
+    }
+
+    address = byte->value;
+    List_FindData(*pubSymbols,(void**)&symbol,&Symbol_ExternFinder,(void*)&address);
+    if(!symbol)
+    {
+        Log(eError,"did not find extern symbol from commands");
+        return;
+    }
+    
+    Memory_Set(buffer,0,sizeof(buffer));
+
+    String_Append(buffer,symbol->name,MAX_SYMBOL_NAME_LEN);
+    String_Append(buffer,SPACE_STR,sizeof(SPACE_STR));
+    Convert_DecimalToBase4Str(CommandCounter,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer));
+
+    byte->value = 0;
+
+    if(!File_WriteLine(file,buffer))
+    {
+        Log(eError,"Failed Writing to file :: %s",buffer);
+    }
+}
+
+
+bool WriteExternFile(char* fileName,List* bytes,List* symbols,int baseAddress)
+{
+    CommandCounter = baseAddress - 1;
+    pubSymbols = symbols;
+
+    return File_WriteToFile(fileName,*bytes,&ExternHandler_WriteExternsToFile); 
+}
 

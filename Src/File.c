@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stddef.h>
-
+#include "Log.h"
 #include "File.h"
 #include "FileInternals.h"
 #include "String.h"
@@ -90,4 +90,25 @@ bool File_WriteLine(FILE* file,const char* text)
 	fprintf(file,"%s\n",text);
 
 	return true;
+}
+
+bool File_WriteToFile(char* entryFileName,List iteratOver,Iterator iter)
+{
+    /*open the file*/
+    FILE* file = File_Open(entryFileName, "w+");
+    
+    if(!file)
+    {
+        Log(eError,"Could not open file");
+        return false;
+    }
+
+    List_ForEach(iteratOver,iter,file);
+
+    /*close the file*/
+    if(!File_Close(file))
+    {
+        Log(eError, "Could not close file");
+        return false;
+    }    
 }

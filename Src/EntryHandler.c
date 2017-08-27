@@ -1,7 +1,10 @@
+#include "Memory.h"
+#include "Convert.h"
 #include "Assembly.h"
 #include "EntryHandler.h"
 #include "String.h"
 #include "Log.h"
+#include "File.h"
 
 #define ENTRY_COMMAND_STR (".entry")
 bool EntryHandler_ISHandler(const char* line)
@@ -29,7 +32,7 @@ bool EntryHandler_Add(const char* line,List* bytes,List* symbols)
         return false;
     }
     symbolsPtr++;
-    
+
     symbolStr = String_Split(symbolsPtr,COMMA_STR);
     if(!symbolStr)
     {
@@ -64,5 +67,31 @@ Handler EntryHandler = {
     &EntryHandler_Add
 };
 
+void EntryHandler_WriteEnteriesToFile(const void* data,size_t len,void* context)
+{
+    char buffer[MAX_LINE_LEN];
+    const Symbol* symbol = (Symbol*)data;
+    FILE* file = context;
+    if(!symbol || !file || symbol->type != ePublic)
+    {
+        return;
+    }
+
+    Memory_Set(buffer,0,sizeof(buffer));
+
+    String_Append(buffer,symbol->name,MAX_SYMBOL_NAME_LEN);
+    String_Append(buffer,SPACE_STR,sizeof(SPACE_STR));
+    Convert_DecimalToBase4Str(symbol->address,&buffer[String_Len(buffer)],sizeof(buffer) - String_Len(buffer));
+
+    if(!File_WriteLine(file,buffer))
+    {
+        Log(eError,"Failed Writing to file :: %s",buffer);
+    }
+}
 
 
+
+bool WriteEntryFile(char fileName[],List* symbols)
+{
+    return File_WriteToFile(fileName,*symbols,&EntryHandler_WriteEnteriesToFile);
+}

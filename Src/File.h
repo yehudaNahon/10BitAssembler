@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
-
+#include "List.h"
 #include "Container.h"
 
 /*
@@ -45,6 +45,8 @@ char* File_FindDot(const char* fileName);
 void File_ForEach(FILE* file,Iterator iter, void* context);
 
 bool File_WriteLine(FILE* file,const char* text);
+
+bool File_WriteToFile(char* entryFileName,List iteratOver,Iterator iter);
 
 
 #endif

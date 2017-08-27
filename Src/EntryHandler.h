@@ -5,6 +5,6 @@
 
 extern Handler EntryHandler;
 
-
+bool WriteEntryFile(char fileName[],List* symbols);
 
 #endif
