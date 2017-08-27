@@ -109,7 +109,7 @@ bool CommandUtils_AddCommandByte(const char* command,const char* operands,const 
         }
     }
     printf("opcode : %d src : %d dst : %d\n",opcode,srcType,dstType);
-    Byte byte = CommandByte_Init(opcode, srcType,dstType);
+    Byte byte = CommandByte_Init(opcode, dstType,srcType);
     if(!Byte_Add(byte,bytes))
     {
         Log(eError, "Failed adding element to list : %s",command);

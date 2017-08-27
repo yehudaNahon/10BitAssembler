@@ -260,20 +260,7 @@ bool Assembler_AssembleFile(char* baseFileName)
     /* create symbol table*/
     File_ForEach(file, &Assembler_CreateSymbols,&assembly);
 
-    printf("******** DATA MEMORY **************\n");
-    List_ForEach(assembly.prog.data.bytes, &PrintBitsIter, NULL);
-
-    printf("*********** SYMBOLS************\n");
-    List_ForEach(assembly.prog.symbols, &Symbol_Print, NULL);
-    printf("\n\n");    
     Queue_ForEach(assembly.penndingCommands, &Assembler_ParseCommands, &assembly.prog);
-    printf("\n\n");
-    printf("********** CODE **************\n");
-    /*printf("%lu %p\n",List_Len(assembly.prog.code.bytes),&prog->code.bytes);*/
-    List_ForEach(assembly.prog.code.bytes,&PrintBitsIter,NULL);
-
-    printf("*********** SYMBOLS************\n");
-    List_ForEach(assembly.prog.symbols, &Symbol_Print, NULL);
     
     /*close the file*/
     if(!File_Close(file))
