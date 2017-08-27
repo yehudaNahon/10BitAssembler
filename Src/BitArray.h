@@ -5,14 +5,14 @@
 #include <stddef.h>
 #include "List.h"
 
-typedef struct BitArray
-{
-    size_t count;
-    uint8_t array[];
-}BitArray;
-
+/* 
+    Prints the contents of the array for len num of bits
+*/
 void PrintBits(uint8_t bytes[],size_t len);
 
+/*
+    Iterate over a list and print the contents in binary
+*/
 void PrintBitsIter(const void* data,size_t len,void* context);
 
 

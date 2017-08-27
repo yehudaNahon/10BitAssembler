@@ -9,8 +9,10 @@
 #include "Assembly.h"
 #include "GeneralMacros.h"
 
+/*an array of all the sub handlrs*/
 #define GetHandlers() Handler handlers[] = {DataCommandHandler,StringCommandHandler,MatCommandHandler}
 
+/*the struct of the handler handler function*/
 Handler DataHandler = {
     &DataHandler_IsHandler,    
     &DataHandler_GetSize,

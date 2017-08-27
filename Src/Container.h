@@ -29,7 +29,7 @@ typedef bool (*Finder)(void*,size_t,void*);
                 - the datas length
                 - aditional context from the user of the container
 */
-typedef void (*Iterator)(const void*,size_t,void*);
+typedef void (*Iterator)(void*,size_t,void*);
 
 /*
     This is a cleaner function pointer generally used to help clean any data when preforming a realese of resources

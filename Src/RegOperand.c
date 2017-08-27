@@ -1,4 +1,4 @@
-#include "RegOperandHandler.h"
+#include "RegOperand.h"
 #include "Convert.h"
 #include "Operand.h"
 #include "BitArray.h"
@@ -32,7 +32,7 @@ bool AddRegs(const char* reg1,const char* reg2,List* bytes)
     {
         return false;
     }
-    
+    /*get the regs values*/
     if(reg1 && IsReg(reg1))
     {
         val1 = Convert_StrToDecimal(&reg1[1]);
@@ -43,6 +43,7 @@ bool AddRegs(const char* reg1,const char* reg2,List* bytes)
         val2 = Convert_StrToDecimal(&reg2[1]);
     }
 
+    /*create the operand byte and adds it to the list*/
     byte = RegOperandByte_Init(val1,val2);
     return Byte_Add(byte,bytes);
 }

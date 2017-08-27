@@ -120,10 +120,6 @@ void String_SimplfyLine(char* line)
 
     Memory_Copy(line,buffer,length);
     
-    /* copy back the info to line*/
-    /*String_Copy(line,buffer,length);
-    line[String_Len(line)] = 0;*/
-    /*release resources*/
     Memory_Delete(buffer);
 }
 
@@ -161,7 +157,7 @@ bool String_IsNumber(const char* numStr)
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -169,7 +165,6 @@ bool String_IsNumber(const char* numStr)
 #define BIG_LETTER_END_CH ('Z')
 #define SMALL_LETTER_BEGIN_CH ('a')
 #define SMALL_LETTER_END_CH ('z')
-
 bool String_IsLetter(const char ch)
 {
     return (ch >= BIG_LETTER_BEGIN_CH && ch <= BIG_LETTER_END_CH) || (ch >= SMALL_LETTER_BEGIN_CH && ch <= SMALL_LETTER_END_CH);

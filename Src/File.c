@@ -2,7 +2,6 @@
 #include <stddef.h>
 #include "Log.h"
 #include "File.h"
-#include "FileInternals.h"
 #include "String.h"
 #include "GeneralMacros.h"
 
@@ -28,7 +27,7 @@ bool File_CleanName(const char* fileName, char* o_rawName, int length)
 	{
 		return false;
 	}
-     
+    
     ptr = File_FindDot(fileName);
 
 	/* check if only the name was specified*/
@@ -58,6 +57,11 @@ char* File_FindDot(const char* fileName)
 }
 
 
+ssize_t File_GetLine(FILE* file, char** line, size_t* len)
+{
+	return getline(line, len, file);
+}
+
 void File_ForEach(FILE* file,Iterator iter, void* context)
 {
     char* line = NULL;
@@ -73,11 +77,6 @@ void File_ForEach(FILE* file,Iterator iter, void* context)
 			lineCount++;
 		}
 	}
-}
-
-ssize_t File_GetLine(FILE* file, char** line, size_t* len)
-{
-	return getline(line, len, file);
 }
 
 bool File_WriteLine(FILE* file,const char* text)
@@ -96,6 +95,28 @@ bool File_WriteToFile(char* entryFileName,List iteratOver,Iterator iter)
 {
     /*open the file*/
     FILE* file = File_Open(entryFileName, "w+");
+    
+    if(!file)
+    {
+        Log(eError,"Could not open file");
+        return false;
+    }
+
+    List_ForEach(iteratOver,iter,file);
+
+    /*close the file*/
+    if(!File_Close(file))
+    {
+        Log(eError, "Could not close file");
+        return false;
+	}    
+	return true;
+}
+
+bool File_AppendToFile(char* entryFileName,List iteratOver,Iterator iter)
+{
+    /*open the file*/
+    FILE* file = File_Open(entryFileName, "a");
     
     if(!file)
     {

@@ -16,19 +16,24 @@
 
 #define MAX_NUM_OF_ARGS (4)
 
-#define TYPE_DEFAULT (0)
 
-
+/* a programmes command byte*/
 typedef struct CommandByte
 {
-    int type :TYPE_BITS_NUM;
-    int destOperand :OPERAND_TYPE_BITS_NUM;
-    int srcOperand :OPERAND_TYPE_BITS_NUM;
-    int opcode :OPCODE_TYPE_BITS_NUM;
+    int type :TYPE_BITS_NUM;                    /*the encoding type (ERA)*/
+    int destOperand :OPERAND_TYPE_BITS_NUM;     /* the destination operands type*/
+    int srcOperand :OPERAND_TYPE_BITS_NUM;      /* the source operands type*/
+    int opcode :OPCODE_TYPE_BITS_NUM;           /* the commands opcode*/
 }CommandByte;
 
+/*
+    Initialize a new command byte
+*/
 Byte CommandByte_Init(int opcode,int srcOp,int dstOp);
 
+/*
+    a iterator for printing all command bytes values
+*/
 void CommandByte_PrintIter(const void* command,size_t len,void* context);
 
 

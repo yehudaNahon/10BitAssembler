@@ -1,5 +1,4 @@
 #include "Symbol.h"
-#include "SymbolInternals.h"
 #include "String.h"
 #include "Memory.h"
 #include <stdio.h>
@@ -74,7 +73,7 @@ bool Symbol_ExternFinder(void* symbolPtr, size_t index, void* counter)
     return false;
 }
 
-void Symbol_Print(const void* data,size_t len, void* context)
+void Symbol_Print(void* data,size_t len, void* context)
 {
     char buffer[MAX_LINE_LEN];
     const Symbol* symbol = data;
@@ -87,6 +86,15 @@ void Symbol_Print(const void* data,size_t len, void* context)
         symbol->dataType == eDataSymbol ? "Data" :(symbol->dataType == eCommandSymbol ? "Command" : "External"));
 }
 
+void Symbol_UpdateDataSymbolAddressIter(void* symbolPtr, size_t index, void* baseAddressPtr)
+{
+    Symbol* symbol = symbolPtr;
+    int *toAdd = (int*)baseAddressPtr;
+    if(symbol && symbol->dataType == eDataSymbol)
+    {
+        symbol->address += *toAdd; 
+    }
+}
 
 
 

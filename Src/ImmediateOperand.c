@@ -1,9 +1,9 @@
 #include "Convert.h"
-#include "ImmediateOperandHandler.h"
-#include "ImmediateOperandHandlerInternals.h"
+#include "ImmediateOperand.h"
 #include "String.h"
 #include "Operand.h"
-#include <stdio.h>
+
+#define IMMEDIATE_INDICATOR_CH ('#')
 
 int Immediate_GetValue(const char* immediateStr)
 {

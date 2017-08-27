@@ -3,15 +3,15 @@
 
 #include <stdbool.h>
 
-
+/* file extensions*/
 #define ASSEMBLY_END (".as")
 #define OBJECT_END (".ob")
 #define EXTERN_END (".ext")
 #define ENTRY_END (".ent")
 
 /*
-	Return whether or not the if an assembly file
-	note : for now will return true if the file is with the ending .as or if the file has no ending
+	Return whether or not the file provided is an assembly file
+	note : will return true if the file is with the ending .as or if the file has no ending
 
     fileName -  a null terminated ascii format array of the filename
 
@@ -28,6 +28,6 @@ bool Assembler_IsAssemblyFile(const char* fileName);
     return  :   true-successfully assembled file
                 false-somthing went wrong
 */
-bool Assembler_AssembleFile(char* AssemblerFile);
+bool Assembler_AssembleFile(char* fileName);
 
 #endif

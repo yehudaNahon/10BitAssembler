@@ -1,6 +1,6 @@
-#include "MatOperandHandler.h"
-#include "LabelOperandHandler.h"
-#include "RegOperandHandler.h"
+#include "MatOperand.h"
+#include "LabelOperand.h"
+#include "RegOperand.h"
 #include "String.h"
 #include "Assembly.h"
 #include <stdio.h>

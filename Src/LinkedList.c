@@ -1,8 +1,4 @@
 #include "LinkedList.h"
-#include "LinkedListInternals.h"
-
-
-#include <stdio.h>
 #include "Memory.h"
 #include "Log.h"
 
@@ -230,14 +226,11 @@ void LinkedList_Delete(LinkedList* list, Cleaner cleaner,void* context)
 
 bool LinkedList_Append(LinkedList* dst,LinkedList* src)
 {
-    if(!dst)
+    if(!dst || !src)
     {
         return false;
     }
     
-    if(!src)
-    {
-        return true;
-    }
-    return LinkedList_Add(dst,src->data,src->length) && LinkedList_Append(dst,src->next);
+    /*add this element to the list and call the function again for my child*/
+    return LinkedList_Add(dst,src->data,src->length) &&(src->next ? LinkedList_Append(dst,src->next) : true);
 }

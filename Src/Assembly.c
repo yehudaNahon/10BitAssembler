@@ -10,8 +10,16 @@ Programme Programme_Init()
     prog.data = Segment_Init();
     prog.code = Segment_Init();
     prog.symbols = List_Init();
-    
+    prog.errorCount = 0;   
     return prog;
+}
+
+/*
+    adds a error to the error counter
+*/
+void NotifyError(Programme* prog)
+{
+    prog->errorCount++;
 }
 
 void Programme_Delete(Programme* prog)
@@ -24,7 +32,7 @@ void Programme_Delete(Programme* prog)
 Assembly Assembly_Init()
 {
     Assembly assembly;
-
+    
     /*create sybol table*/
     assembly.prog = Programme_Init();
     assembly.penndingCommands = Queue_Init();

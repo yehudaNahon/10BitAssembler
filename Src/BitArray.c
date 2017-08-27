@@ -3,8 +3,13 @@
 #include <stdio.h>
 #include "Byte.h"
 
+/* sets the bit at k index to its opisit value*/
 #define SetBit(A,k)     ( A[(k/32)] |= (1 << (k%32)) )
+
+/* sets the bit at k index to 0 value*/
 #define ClearBit(A,k)   ( A[(k/32)] &= ~(1 << (k%32)) )
+
+/*returns the bits at k index value*/
 #define GetBit(A,k)    ( A[(k/32)] & (1 << (k%32)) )
 
 

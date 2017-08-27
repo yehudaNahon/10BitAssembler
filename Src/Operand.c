@@ -5,10 +5,10 @@
 #include "Log.h"
 #include <stdio.h>
 #include "Memory.h"
-#include "MatOperandHandler.h"
-#include "LabelOperandHandler.h"
-#include "RegOperandHandler.h"
-#include "ImmediateOperandHandler.h"
+#include "MatOperand.h"
+#include "LabelOperand.h"
+#include "RegOperand.h"
+#include "ImmediateOperand.h"
 
 
 Byte RegOperandByte_Init(int src,int dst)
@@ -102,13 +102,13 @@ bool Operand_AddOperands(char* first,char* second,List* bytes,List* symbols)
     firstType = Operand_GetType(first);
     secondType = Operand_GetType(second);
 
-    
+    /* in case of 2 regs the 2 will share the same byte so create them together*/    
     if(firstType == eRegister && secondType == eRegister)
     {
         return AddRegs(first,second,bytes);
     }
     
-    
+    /* add the first operand to byte list*/
     if(first)
     {
         switch (firstType)
@@ -130,6 +130,7 @@ bool Operand_AddOperands(char* first,char* second,List* bytes,List* symbols)
         }
     }
     
+    /* add the second operand to byte list*/
     if(second)
     {
         switch (secondType)

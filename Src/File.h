@@ -44,9 +44,27 @@ char* File_FindDot(const char* fileName);
 */
 void File_ForEach(FILE* file,Iterator iter, void* context);
 
+/*
+    Write the text to the file
+
+    file : the file descriptor
+    text : a null terminated string
+    
+    return true-success false-falied
+*/
 bool File_WriteLine(FILE* file,const char* text);
 
-bool File_WriteToFile(char* entryFileName,List iteratOver,Iterator iter);
+/*
+    Create a file and let the iterator write to it using the list elements as data 
+    and the file as context
 
+*/
+bool File_WriteToFile(char* FileName,List iteratOver,Iterator iter);
+
+/*
+    Open a file in append mode ("a") and write data this will keep any data before 
+    the open and jst add to it
+*/
+bool File_AppendToFile(char* FileName,List iteratOver,Iterator iter);
 
 #endif

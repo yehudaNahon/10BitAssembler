@@ -3,6 +3,12 @@
 
 #include "LinkedList.h"
 
+
+/*
+    becuse of the simmelarity of the List operation with the linkedList operation 
+    this class is mirrly just a typedef to incapsulate the back-end operation from the 
+    concept of a list
+*/
 typedef LinkedList List;
 
 

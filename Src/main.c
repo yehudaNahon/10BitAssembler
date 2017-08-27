@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 	/*	Create an array of all the ligal files*/
 	for(i=1; i<argc; i++)
 	{
-
+		/* create an array of all ligal assembly files*/
 		if(Assembler_IsAssemblyFile(argv[i]))
 		{
 			/* Allocate a new array for the file name*/
@@ -57,15 +57,17 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			Log(eError, "File Provided Isn't an assembly file");
+			Log(eError, "File Provided Isn't an assembly file :: %s",argv[i]);
 		}
 	}
 
+	/* asemble all the arrays files*/
 	for(i=0; i< fileCount; i++)
 	{
 		Assembler_AssembleFile(files[i]);
 	}
 
+	/*release the files memory*/
 	for(i=0; i < fileCount; i++)
 	{
 		Memory_Delete(files[i]);
