@@ -1,13 +1,11 @@
-#include "OSDefines.h"
 #include <stdio.h>
-
 #include "Assembler.h"
 #include "Log.h"
 #include "Memory.h"
 #include "File.h"
 
 #define MIN_ARG_COUNT (2)
-
+#define MAX_FILE_NAME (100)
 
 /*
 	Prints to stdout a helful help menu with the explanation on how to use the programme
@@ -39,14 +37,14 @@ int main(int argc, char* argv[])
 		if(Assembler_IsAssemblyFile(argv[i]))
 		{
 			/* Allocate a new array for the file name*/
-			files[fileCount] = Memory_Allocate(NAME_MAX * sizeof(char));
+			files[fileCount] = Memory_Allocate(MAX_FILE_NAME * sizeof(char));
 			if(!files[fileCount])
 			{
 				Log(eError,MEMORY_ERR);
 				return 1;
 			}
 
-			if(File_CleanName(argv[i], files[fileCount], NAME_MAX))
+			if(File_CleanName(argv[i], files[fileCount], MAX_FILE_NAME))
 			{
 				fileCount++;	
 			}

@@ -1,13 +1,13 @@
 #ifndef ASSEMBLY_H
 #define ASSEMBLY_H
 
-#include "OSDefines.h"
 #include "Queue.h"
 #include "Segment.h"
 #include "List.h"
 
 /* the maximum number of characters in a assembly line*/
 #define MAX_LINE_LEN (800)
+#define MAX_FILE_NAME (100)
 
 /*
     a programme data strcuture
